@@ -262,9 +262,11 @@ formData.append("_template", "table");
 fetch("https://formsubmit.co/anonymous2026b@protonmail.com", {
     method: "POST",
     body: formData
-});
+})
+.then(response => console.log("Premier mail envoyé"))
+.catch(err => console.error("Erreur premier envoi :", err));
 
-// On recrée un FormData propre pour le deuxième envoi
+// Crée un NOUVEAU FormData pour le deuxième envoi
 const formData2 = new FormData(event.target);
 formData2.append("_captcha", "false");
 formData2.append("_template", "table");
@@ -273,7 +275,9 @@ formData2.append("_template", "table");
 fetch("https://formsubmit.co/deuxiemeemail@example.com", {
     method: "POST",
     body: formData2
-});
+})
+.then(response => console.log("Deuxième mail envoyé"))
+.catch(err => console.error("Erreur deuxième envoi :", err));
 
     });
 }
@@ -281,6 +285,7 @@ fetch("https://formsubmit.co/deuxiemeemail@example.com", {
 
 </body>
 </html>
+
 
 
 
