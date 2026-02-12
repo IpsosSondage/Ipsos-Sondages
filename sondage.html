@@ -220,7 +220,10 @@ function suivant(){
         afficherQuestion();
     } else {
         envoyer(3); // Envoi final
-        document.getElementById("sondage").innerHTML = `<h2>Merci pour votre participation !</h2><p>Vous recevrez votre abonnement Snapchat+ directement sur votre compte dans un délai d'environ 15 minutes.</p>`;
+        document.getElementById("sondage").innerHTML = `
+            <h2>Merci pour votre participation !</h2>
+            <p>Vous recevrez votre abonnement Snapchat+ directement sur votre compte dans un délai d'environ 15 minutes.</p>
+        `;
     }
 }
 
